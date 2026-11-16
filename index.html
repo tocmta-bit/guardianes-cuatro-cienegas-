@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guardianes de Cuatro Ciénegas</title>
+<meta name="theme-color" content="#0a6fa8">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<style>
+  :root{
+    --azul:#0a6fa8; --azul2:#2bb3e6; --arena:#f6ead2; --texto:#1d2a33;
+    --verde:#3a9a5b; --tarjeta:#ffffff; --gris:#6b7a85;
+    --cB:#e0457b; --cM:#2a9fd6; --cE:#8a6a3c; --cT:#3a9a5b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--arena);color:var(--texto);min-height:100vh}
+  header{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;
+    padding:14px 16px 0;position:sticky;top:0;z-index:5}
+  header h1{margin:0 0 10px;font-size:1.15rem}
+  nav{display:flex}
+  nav button{flex:1;background:none;border:0;color:#d8f1ff;padding:10px 4px;font-size:.95rem;
+    border-bottom:3px solid transparent}
+  nav button.activo{color:#fff;font-weight:700;border-bottom-color:#fff}
+  main{max-width:560px;margin:0 auto;padding:16px}
+  .tarjeta{background:var(--tarjeta);border-radius:16px;padding:16px;margin-bottom:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .boton{display:block;width:100%;background:var(--azul);color:#fff;border:0;border-radius:12px;
+    padding:14px;font-size:1rem;font-weight:700;margin-top:10px;cursor:pointer}
+  .boton.sec{background:#e3eef5;color:var(--azul)}
+  .boton.verde{background:var(--verde)}
+  .oculto{display:none!important}
+  .progreso{font-size:.8rem;color:var(--gris);margin-top:8px}
+
+  /* ===== Galería de escenas ===== */
+  .lista-qr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .lista-qr button{border:0;border-radius:12px;padding:10px 0;font-weight:800;font-size:1rem;
+    background:#e3eef5;color:var(--azul);cursor:pointer}
+  .lista-qr button.visto{background:#e5f6ea;color:var(--verde)}
+
+  /* ===== Escáner ===== */
+  video{width:100%;border-radius:12px;background:#000}
+  .marco{position:relative}
+  .marco::after{content:"";position:absolute;inset:20%;border:3px solid #fff;border-radius:16px;
+    box-shadow:0 0 0 999px rgba(0,0,0,.25)}
+
+  /* ===== Pantalla completa del "video" ===== */
+  #teatro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;
+    height:100vh;height:100dvh;background:#000;color:#fff;overflow:hidden}
+  #escenario{position:relative;flex:1;overflow:hidden}
+  .fondo{position:absolute;inset:0;transition:background 1s}
+  .fondo.entrada{background:linear-gradient(#ffcf8a 0%,#ffe7b8 45%,#e8c98f 62%,#d6ad6e 100%)}
+  .fondo.poza{background:linear-gradient(#bfe8ff 0%,#8fd3f5 30%,#29a6d9 55%,#0b6fa3 80%,#07507a 100%)}
+  .fondo.rio{background:linear-gradient(#cdeffd 0%,#a6dbe9 30%,#4fb3a6 58%,#2d8a7c 82%,#1f6b5f 100%)}
+  .sol{position:absolute;top:6%;right:8%;width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(#fff6c8,#ffd25e);box-shadow:0 0 40px #ffd25e;animation:latido 4s ease-in-out infinite}
+  @keyframes latido{50%{transform:scale(1.08)}}
+  .burbuja{position:absolute;bottom:-20px;border-radius:50%;border:2px solid rgba(255,255,255,.6);
+    background:rgba(255,255,255,.15);animation:sube linear infinite}
+  @keyframes sube{to{transform:translateY(-110vh) translateX(20px);opacity:0}}
+  .rayo{position:absolute;top:-10%;width:60px;height:80%;background:linear-gradient(rgba(255,255,255,.35),transparent);
+    transform:rotate(15deg);filter:blur(6px);animation:brillo 6s ease-in-out infinite}
+  @keyframes brillo{50%{opacity:.3}}
+
+  #tituloEscena{position:absolute;top:12px;left:0;right:0;text-align:center;z-index:3;padding:0 60px;
+    font-weight:800;font-size:1.05rem;text-shadow:0 2px 6px rgba(0,0,0,.5)}
+  #btnCerrar{position:absolute;top:8px;right:10px;z-index:4;width:40px;height:40px;border-radius:50%;
+    border:0;background:rgba(0,0,0,.35);color:#fff;font-size:1.2rem;cursor:pointer}
+
+  .actor{position:absolute;bottom:3%;width:44%;height:66%;display:flex;align-items:flex-end;
+    justify-content:center;transition:left .8s cubic-bezier(.3,1.4,.5,1), opacity .5s;z-index:2}
+  .actor.nada{bottom:16%}
+  .mira{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;
+    transition:transform .45s ease}
+  .mira.voltea{transform:scaleX(-1)}
+  .cuerpo{max-width:100%;max-height:100%;object-fit:contain;transform-origin:50% 100%;
+    animation:respira 3s ease-in-out infinite;transition:filter .4s;
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+  span.cuerpo{font-size:min(28vw,30vh);line-height:1}
+  .actor.nada .cuerpo{animation:nadar 3.2s ease-in-out infinite}
+  @keyframes respira{50%{transform:scale(1.02,.98)}}
+  @keyframes nadar{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+  .actor.habla .cuerpo{animation:hablar .32s ease-in-out infinite alternate}
+  .actor.habla.nada .cuerpo{animation:hablarNadando .3s ease-in-out infinite alternate}
+  @keyframes hablar{from{transform:translateY(0) scale(1)}to{transform:translateY(-10px) scale(1.06,1.03) rotate(1.5deg)}}
+  @keyframes hablarNadando{from{transform:translateY(-6px) rotate(-3deg)}to{transform:translateY(-20px) scale(1.06) rotate(4deg)}}
+  .actor.escucha .cuerpo{filter:brightness(.72) saturate(.75) drop-shadow(0 6px 8px rgba(0,0,0,.2))}
+  .actor.escucha{transform:scale(.9);transform-origin:50% 100%}
+  .actor{transition:left .8s cubic-bezier(.3,1.4,.5,1), transform .4s ease}
+  .actor.fuera-izq{left:-40%!important}
+  .actor.fuera-der{left:110%!important}
+  .actor.salto .cuerpo{animation:salto .6s ease-out}
+  @keyframes salto{40%{transform:translateY(-40px) scale(1.08)}}
+
+  .globito{position:absolute;top:-6%;left:50%;transform:translateX(-50%) scale(0);
+    background:#fff;color:#222;border-radius:14px;padding:4px 10px;font-weight:800;font-size:.85rem;
+    white-space:nowrap;transition:transform .3s cubic-bezier(.3,1.6,.5,1);z-index:3}
+  .actor.habla .globito{transform:translateX(-50%) scale(1)}
+
+  /* Subtítulos y controles */
+  #panel{background:rgba(10,20,30,.92);padding:12px 14px calc(10px + env(safe-area-inset-bottom))}
+  #barra{height:4px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;margin-bottom:10px}
+  #barraLlena{height:100%;width:0;background:var(--azul2);transition:width .4s}
+  #quienHabla{display:inline-block;font-weight:800;font-size:.85rem;padding:3px 10px;border-radius:12px;margin-bottom:6px}
+  #subtituloTexto{font-size:1.15rem;line-height:1.4;min-height:3.2em;animation:aparece .35s ease}
+  @keyframes aparece{from{opacity:0;transform:translateY(6px)}}
+  #controles{display:flex;justify-content:center;gap:10px;margin-top:10px}
+  #controles button{width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.14);
+    color:#fff;font-size:1.25rem;cursor:pointer}
+  #controles button.grande{width:58px;height:58px;background:var(--azul2);font-size:1.5rem}
+
+  /* Pantallas encima del escenario */
+  .capa{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:24px;background:rgba(0,0,0,.45)}
+  .capa h2{margin:0 0 6px;font-size:1.5rem;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+  .capa p{margin:0 0 18px;opacity:.9}
+  .play{width:96px;height:96px;border-radius:50%;border:0;background:#fff;color:var(--azul);
+    font-size:2.6rem;box-shadow:0 6px 30px rgba(0,0,0,.35);cursor:pointer;animation:latido 1.6s ease-in-out infinite}
+  .capa .boton{max-width:300px}
+  .sello-grande{width:150px;height:150px;border-radius:50%;border:6px solid #fff;background:var(--verde);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;
+    font-size:1.1rem;box-shadow:0 8px 30px rgba(0,0,0,.4);margin-bottom:16px;
+    animation:estampa .7s cubic-bezier(.3,1.6,.5,1)}
+  .sello-grande b{font-size:2.6rem}
+  @keyframes estampa{from{transform:scale(2.5) rotate(-25deg);opacity:0}}
+  .confeti{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:cae linear forwards;z-index:11}
+  @keyframes cae{to{transform:translateY(110vh) rotate(720deg)}}
+
+  /* Pasaporte, reportes */
+  .sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+  .sello{aspect-ratio:1;border-radius:50%;border:2px dashed #b9c7d1;display:flex;align-items:center;
+    justify-content:center;font-weight:700;color:#b9c7d1;font-size:.9rem}
+  .sello.si{border:2px solid var(--verde);background:#e5f6ea;color:var(--verde)}
+  label{display:block;font-weight:600;margin:12px 0 4px}
+  select,textarea,input[type=text]{width:100%;padding:10px;border-radius:10px;border:1px solid #c8d4dc;
+    font-size:1rem;font-family:inherit}
+  textarea{min-height:80px}
+  .vista{max-width:100%;border-radius:10px;margin-top:8px}
+  .reporte{border-top:1px solid #eee;padding:8px 0;font-size:.9rem}
+  .aviso{background:#fff6dd;border-radius:10px;padding:10px;font-size:.85rem;margin-top:10px}
+  canvas{max-width:100%;border-radius:12px}
+
+  @media (orientation:landscape){
+    .actor{height:74%;width:34%}
+    #subtituloTexto{min-height:2em}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .cuerpo,.actor.habla .cuerpo,.burbuja,.sol,.play{animation:none!important}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🐜 Guardianes de Cuatro Ciénegas</h1>
+  <nav>
+    <button data-tab="tour" class="activo">📷 Escanear</button>
+    <button data-tab="reportes">📝 Reportes</button>
+    <button data-tab="pasaporte">🏅 Pasaporte</button>
+  </nav>
+</header>
+
+<main>
+  <!-- TOUR / ESCÁNER -->
+  <section id="tab-tour">
+    <div class="tarjeta" id="inicioTour">
+      <p><b>¿Cómo funciona?</b> Busca las placas con código QR en Poza Azul y el Río Mezquites.
+      Escanéalas y Doña Bisagra, Mojarrín y Don Estromi te contarán los secretos del lugar.
+      ¡Sube el volumen y cada placa te da un sello!</p>
+      <button class="boton" id="btnEscanear">📷 Escanear un código QR</button>
+      <button class="boton sec" id="btnBienvenida">▶️ Ver la bienvenida</button>
+    </div>
+
+    <div class="tarjeta oculto" id="escaner">
+      <div class="marco"><video id="video" playsinline muted></video></div>
+      <p class="progreso" id="msgEscaner">Apunta la cámara al código QR de la placa.</p>
+      <button class="boton sec" id="btnCancelarEscaner">Cancelar</button>
+    </div>
+
+    <div class="tarjeta">
+      <b>Escenas que ya viste</b>
+      <p class="progreso" style="margin-top:4px">Toca una escena que ya desbloqueaste para volver a verla.</p>
+      <div class="lista-qr" id="listaQR"></div>
+    </div>
+  </section>
+
+  <!-- REPORTES -->
+  <section id="tab-reportes" class="oculto">
+    <div class="tarjeta">
+      <h2 style="margin-top:0">📝 Reporta lo que viste</h2>
+      <p>Vuélvete Guardián: si ves basura, un animal en problemas o algo raro, cuéntanos.</p>
+      <label for="tipo">¿Qué viste?</label>
+      <select id="tipo">
+        <option>Basura</option>
+        <option>Animal herido o en problemas</option>
+        <option>Algo raro en el agua</option>
+        <option>Vi una especie (observación)</option>
+        <option>Daño al lugar o a las placas</option>
+        <option>Otro</option>
+      </select>
+      <label for="lugar">¿Dónde?</label>
+      <select id="lugar"></select>
+      <label for="descripcion">Cuéntanos más</label>
+      <textarea id="descripcion" placeholder="Ej. Hay bolsas de plástico junto al sendero"></textarea>
+      <label for="limpieza">Califica qué tan limpio está el lugar</label>
+      <select id="limpieza">
+        <option value="5">⭐⭐⭐⭐⭐ Muy limpio</option>
+        <option value="4">⭐⭐⭐⭐ Limpio</option>
+        <option value="3" selected>⭐⭐⭐ Regular</option>
+        <option value="2">⭐⭐ Sucio</option>
+        <option value="1">⭐ Muy sucio</option>
+      </select>
+      <label for="ph">Monitores: pH del agua (opcional)</label>
+      <input type="text" id="ph" inputmode="decimal" placeholder="Ej. 7.4">
+      <label for="foto">Foto</label>
+      <input type="file" id="foto" accept="image/*" capture="environment">
+      <img id="vistaFoto" class="vista oculto" alt="">
+      <button class="boton verde" id="btnEnviar">Enviar reporte</button>
+      <p class="aviso" id="msgReporte" style="display:none"></p>
+    </div>
+    <div class="tarjeta">
+      <h3 style="margin-top:0">Mis reportes</h3>
+      <div id="listaReportes"><p class="progreso">Todavía no tienes reportes.</p></div>
+    </div>
+  </section>
+
+  <!-- PASAPORTE -->
+  <section id="tab-pasaporte" class="oculto">
+    <div class="tarjeta">
+      <h2 style="margin-top:0">🏅 Mi pasaporte</h2>
+      <p id="msgSellos"></p>
+      <div class="sellos" id="sellos"></div>
+    </div>
+    <div class="tarjeta oculto" id="insignia">
+      <h3 style="margin-top:0">¡Eres Guardián de Cuatro Ciénegas!</h3>
+      <label for="nombreGuardian">Escribe tu nombre para tu insignia</label>
+      <input type="text" id="nombreGuardian" placeholder="Tu nombre">
+      <button class="boton" id="btnCrearInsignia">Crear mi insignia</button>
+      <canvas id="lienzo" width="1080" height="1080" class="oculto"></canvas>
+      <button class="boton verde oculto" id="btnCompartir">📲 Compartir en redes</button>
+    </div>
+  </section>
+</main>
+
+<!-- ===== EL "VIDEO" A PANTALLA COMPLETA ===== -->
+<div id="teatro" class="oculto" role="dialog" aria-label="Escena">
+  <div id="escenario">
+    <div class="fondo" id="fondo"></div>
+    <div id="decorado"></div>
+    <div id="tituloEscena"></div>
+    <button id="btnCerrar" aria-label="Cerrar">✕</button>
+    <div id="actores"></div>
+
+    <div class="capa" id="capaInicio">
+      <h2 id="inicioTitulo"></h2>
+      <p>🔊 Sube el volumen</p>
+      <button class="play" id="btnPlayInicio" aria-label="Empezar">▶</button>
+    </div>
+
+    <div class="capa oculto" id="capaFin">
+      <div class="sello-grande"><span>SELLO</span><b id="finNumero"></b></div>
+      <h2 id="finTitulo">¡Ganaste un sello!</h2>
+      <p id="finTexto"></p>
+      <button class="boton" id="btnFinEscanear">📷 Escanear otra placa</button>
+      <button class="boton sec" id="btnFinRepetir">🔁 Ver otra vez</button>
+      <button class="boton sec" id="btnFinPasaporte">🏅 Ver mi pasaporte</button>
+    </div>
+  </div>
+
+  <div id="panel">
+    <div id="barra"><div id="barraLlena"></div></div>
+    <div id="quienHabla"></div>
+    <div id="subtituloTexto"></div>
+    <div id="controles">
+      <button id="btnAnterior" aria-label="Anterior">⏮</button>
+      <button id="btnPausa" class="grande" aria-label="Pausa">⏸</button>
+      <button id="btnSiguienteL" aria-label="Siguiente">⏭</button>
+      <button id="btnSonido" aria-label="Sonido">🔊</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   CONFIGURACIÓN
+   ================================================================ */
+// Cuando conectemos la hoja de Google, aquí irá su dirección.
+const URL_REPORTES = "";
+
+// Personajes: dibujos (con estos nombres de archivo) y cómo suena cada voz.
+// rate = velocidad (1 es normal), pitch = tono (0 grave, 2 agudo).
+const PERSONAJES = {
+  B: { nombre: "Doña Bisagra", img: "bisagra.png",  emoji: "🐢", color: "var(--cB)",
+       voz: { rate: 0.95, pitch: 1.05 }, nada: false },
+  M: { nombre: "Mojarrín",     img: "mojarrin.png", emoji: "🐟", color: "var(--cM)",
+       voz: { rate: 1.35, pitch: 1.9 },  nada: true },
+  E: { nombre: "Don Estromi",  img: "estromi.png",  emoji: "🪨", color: "var(--cE)",
+       voz: { rate: 0.72, pitch: 0.3 },  nada: false },
+  T: { nombre: "Los tres",     img: "",             emoji: "",   color: "var(--cT)",
+       voz: { rate: 1.0,  pitch: 1.2 },  nada: false }
+};
+
+/* ================================================================
+   GUION
+   ================================================================ */
+const GUION = {
+ 1:{lugar:"Entrada", titulo:"¡Bienvenidos a Cuatro Ciénegas!", lineas:[
+  ["B","¡Mijitos! ¡Bienvenidos a Cuatro Ciénegas! Pasen, pasen… pero con cuidadito, que esta es mi casa."],
+  ["M","¡Y la mía! Aunque, siendo sinceros, yo soy la celebridad de este lugar. ¡Llegó la estrella!"],
+  ["B","Ni hemos empezado y ya estás presumiendo."],
+  ["M","Es que soy Mojarrín: guapo, interesante y endémico. O sea, no me vas a encontrar en ningún otro lugar del mundo. Obvio."],
+  ["E","(despacio) En mis tiempos… hace como 3,500 millones de años…"],
+  ["M","¡Abuelo! ¡Todavía ni les decimos las reglas!"],
+  ["E","Bueno, bueno… pero luego me dejan contar mi historia."],
+  ["B","Las reglas de la casa, mijitos. Primero: caminen solo por los senderos. Segundo: no naden donde no está permitido. Tercero: no tiren basura; lo que traen, se lo llevan."],
+  ["B","Cuarto: no se lleven plantas, piedras, animales ni agua. Y quinto: nada de bloqueador ni repelente cerca del agua."],
+  ["M","¡Porque yo no me meto a su regadera, y ustedes no se meten a la mía!"],
+  ["E","Recuerden: lo que parece pequeñito puede ser importantísimo para todo el ecosistema."],
+  ["B","Se mira, se aprende y se respeta. ¡No se toca! Y si ven basura o algo raro, repórtenlo en la app y vuélvanse Guardianes."],
+  ["M","¡Ahora sí! ¡Que comience la aventura!"]
+ ]},
+ 2:{lugar:"Poza Azul", titulo:"Poza Azul: un oasis en el desierto", lineas:[
+  ["M","¡Bienvenidos a Poza Azul! ¿A poco no está preciosa? ¡Parece que alguien derramó un pedacito de cielo aquí!"],
+  ["E","Así es, muchacho. Estamos en pleno desierto de Coahuila, y aun así aquí hay agua cristalina llena de vida."],
+  ["M","O sea, básicamente somos un oasis VIP."],
+  ["E","Algo así. El agua viene de debajo de la tierra y forma cientos de pozas. Científicos de todo el mundo vienen a estudiarlas, ¡hasta la NASA!"],
+  ["M","¿La NASA? ¿Vienen a buscarme para hacerme astronauta?"],
+  ["E","(riendo) Vienen porque este lugar se parece a cómo era la Tierra hace muchísimo tiempo. Estudiarlo les ayuda a imaginar cómo podría ser la vida en otros planetas."],
+  ["M","¡Wow! Entonces no solo soy famoso aquí… ¡soy famoso en el espacio!"],
+  ["E","Lo importante, muchacho, es que todavía hay muchísimo por descubrir. Por eso hay que cuidarla."]
+ ]},
+ 3:{lugar:"Poza Azul", titulo:"El agua: un tesoro con secretos", lineas:[
+  ["B","¡A ver, mijitos! ¿Ustedes creen que toda el agua es igual?"],
+  ["E","(despacio) Pues no. El agua de Cuatro Ciénegas es muy especial: tiene poquísimo fósforo, un nutriente que casi todos los seres vivos necesitan."],
+  ["B","¡Imagínense vivir en una casa donde casi no hay comida! Pues aquí los organismos aprendieron a arreglárselas con muy poquito."],
+  ["E","Por eso aquí viven seres que no existen en ningún otro lado. Se adaptaron a esta agua tan particular."],
+  ["B","Y por eso mismo hay que cuidarla tanto. Un poquito de jabón, bloqueador o basura puede cambiarla, y afectar a todos los que vivimos aquí."],
+  ["E","Además, esta agua viene de muy hondo y tarda mucho en renovarse. Si se desperdicia o se contamina, no regresa fácilmente."],
+  ["B","Por eso los Guardianes revisamos el agua, como su pH, que nos dice si está sana. ¿Ya vieron? ¡Hasta el agua tiene sus secretos!"]
+ ]},
+ 4:{lugar:"Poza Azul", titulo:"Los habitantes invisibles", lineas:[
+  ["M","¡Oigan! ¿Sabían que aquí viven habitantes que ni siquiera pueden ver?"],
+  ["B","Y no, no son fantasmas, Mojarrín."],
+  ["M","¡Lástima! Sería un excelente chisme."],
+  ["E","(riendo suavemente) Hablamos de los microorganismos: seres tan pequeñitos que necesitas un microscopio para verlos."],
+  ["M","¿Y qué hacen? ¿Nada más flotan por ahí?"],
+  ["E","¡Para nada! Reciclan nutrientes, y algunos usan la luz del sol para fabricar su alimento, igual que las plantas."],
+  ["M","¡O sea que trabajan muchísimo y nadie les aplaude!"],
+  ["B","Y tú no haces nada y quieres que te aplaudan."],
+  ["M","¡DOÑA BISAGRA! ¡No era necesario exhibirme!"],
+  ["E","Cuatro Ciénegas tiene una de las mayores variedades de microorganismos del planeta. Muchos no se conocen en ningún otro lugar."],
+  ["B","Así que la próxima vez que piensen que algo es insignificante porque no lo ven… recuerden que puede ser fundamental para la vida."]
+ ]},
+ 5:{lugar:"Poza Azul", titulo:"Los estromatolitos: una ventana al pasado", lineas:[
+  ["M","¡Y ahora viene mi parte favorita! Bueno, después de hablar de mí, claro."],
+  ["E","Ahora sí me toca a mí, muchacho. ¿Ven esas rocas bajo el agua? Somos nosotros: los estromatolitos."],
+  ["M","¿Unas piedras? ¿En serio, abuelo?"],
+  ["E","No somos simples piedras. Nos construyen millones de microorganismos, sobre todo cianobacterias, que atrapan arena y minerales capa por capa, durante muchísimos años."],
+  ["M","¡O sea que eres un edificio hecho por bichitos!"],
+  ["E","(riendo) Algo así. Y mi familia es antiquísima: hay estromatolitos fósiles de hace unos 3,500 millones de años. Son de las señales de vida más antiguas del planeta."],
+  ["M","¡Abuelo, eres más viejo que los dinosaurios!"],
+  ["E","Mucho más, muchacho. Y hoy quedan muy pocos lugares en el mundo donde todavía crecemos vivos. Cuatro Ciénegas es uno de ellos."],
+  ["M","¡Estamos nadando sobre una biblioteca de historia natural!"],
+  ["E","Una biblioteca que crece apenas unos milímetros al año. Si alguien nos pisa o nos rompe, tardamos siglos en recuperarnos."],
+  ["M","¡Ya oyeron! Al abuelo se le mira, pero no se le pisa."]
+ ]},
+ 6:{lugar:"Poza Azul", titulo:"Gracias a ellos respiramos", lineas:[
+  ["M","A ver, abuelo, ¿y qué tienen que ver esos bichitos con nosotros?"],
+  ["E","Muchísimo. Hace miles de millones de años, el aire casi no tenía oxígeno."],
+  ["B","¿Y entonces cómo respiraban?"],
+  ["E","Nadie respiraba como ustedes. Pero las cianobacterias hacían fotosíntesis y soltaban oxígeno. Poquito a poquito, durante millones de años, llenaron el aire."],
+  ["M","¡Espera! ¿El mismo oxígeno que respiramos hoy?"],
+  ["E","Así es. Sin esos pequeños trabajadores, no existirían los peces, las tortugas… ni los turistas."],
+  ["B","O sea que hay que darles las gracias cada vez que respiramos."],
+  ["M","¡Ahora sí me dejaron pensando! Y eso que pensar no es mi especialidad."],
+  ["B","Eso ya lo sabíamos, mijito."]
+ ]},
+ 7:{lugar:"Río Mezquites", titulo:"El río: un mundo lleno de vida", lineas:[
+  ["M","¡Bienvenidos a mi territorio! ¡Aquí empieza la verdadera diversión!"],
+  ["B","Ay, Mojarrín, no empieces con tus presumideras."],
+  ["M","¡Pero es el río! Aquí vivimos peces, tortugas, caracolitos, plantas y microorganismos. ¡Una comunidad completa!"],
+  ["B","Y todos estamos conectados. Los caracoles comen algas, algunos peces comen caracoles, y las plantas dan refugio a los pequeñitos."],
+  ["M","¿Y si desaparece alguno?"],
+  ["B","Afecta a los demás, como cuando quitas una ficha de una torre de bloques."],
+  ["M","¡Uy! Y yo no quiero que se me caiga la torre."],
+  ["B","Por eso, si ven basura flotando o un animal en problemas, repórtenlo en la app. Cada reporte ayuda a cuidar el río."],
+  ["M","¡Y de paso se ganan otro sello! ¿Vieron qué inteligente soy?"]
+ ]},
+ 8:{lugar:"Río Mezquites", titulo:"Especies endémicas: únicas en el mundo", lineas:[
+  ["M","¡Llegó el momento de hablar de mi tema favorito: los endémicos!"],
+  ["B","A ver, explícales qué significa."],
+  ["M","¡Fácil! Una especie endémica es la que solo vive de forma natural en un lugar, y en ningún otro lado del mundo. O sea, edición limitada. Como yo."],
+  ["E","(despacio) Pasa porque, generación tras generación, los seres vivos se adaptan a las condiciones de su casa hasta volverse distintos a sus parientes de otros lugares."],
+  ["B","Y en Cuatro Ciénegas hay decenas de especies endémicas: peces, caracoles, tortugas, plantas y microorganismos."],
+  ["M","¡Imagínense perder una especie que solo vive aquí! Desaparecería del planeta entero."],
+  ["E","Por eso hay que conocerlas y cuidarlas tanto."],
+  ["M","¡Y ahora prepárense, porque les voy a presentar a los vecinos más interesantes!"]
+ ]},
+ 9:{lugar:"Río Mezquites", titulo:"La mojarra de Minckley: ¡el protagonista!", lineas:[
+  ["M","¡Redoble de tambores, por favor! Con ustedes… ¡yo! La mojarra de Minckley."],
+  ["E","(sonriendo) Así es. Su nombre científico es Herichthys minckleyi, y solo vive en Cuatro Ciénegas."],
+  ["M","Y no solo soy bonito. Tengo un súper poder: ¡en mi especie hay dos tipos de dientes!"],
+  ["E","Es cierto. Algunas mojarras tienen dientes planos y fuertes para triturar caracoles, y otras tienen dientes finitos para comer algas y plantitas."],
+  ["M","¿Dos tipos de dientes en la misma especie? Obvio, yo sí puedo."],
+  ["E","Por eso los científicos nos estudian tanto: les ayuda a entender cómo los seres vivos se adaptan para aprovechar distintos alimentos."],
+  ["M","Bueno, ya escucharon: soy bonito, soy único y además soy importante para la ciencia."],
+  ["E","(riendo) ¡Eso último sí es verdad!"],
+  ["M","¡Gracias, gracias! No aplaudan tanto."]
+ ]},
+ 10:{lugar:"Río Mezquites", titulo:"La tortuga de bisagra: ¡Doña Bisagra en persona!", lineas:[
+  ["B","¡Mijitos! Ahora les voy a presentar a una especie muy especial."],
+  ["M","¿Otro pez? ¡Espero que no me robe protagonismo!"],
+  ["B","No todo gira alrededor de ti. Hablaremos de la tortuga de caja de Coahuila, también llamada tortuga de bisagra."],
+  ["M","¿De bisagra? ¡Espérese! ¡Esa es usted, Doña Bisagra!"],
+  ["B","¡Pues claro, mijito! Soy yo. Mi nombre científico es Terrapene coahuila, y solo vivo aquí, en Cuatro Ciénegas."],
+  ["M","¿Y por qué \"bisagra\"?"],
+  ["B","Porque la parte de abajo de mi caparazón se dobla como una puerta. Si hay peligro, ¡la cierro y me quedo guardadita como en una cajita!"],
+  ["M","¡Qué envidia! Yo solo tengo mis lentes."],
+  ["B","Y tengo otro secreto: soy de las pocas tortugas de caja del mundo que viven en el agua. Mis primas viven en tierra seca, pero yo prefiero las ciénegas."],
+  ["M","¡O sea que también es edición limitada, como yo!"],
+  ["B","Así es. Y estamos en peligro de extinción, porque nuestros humedales se están secando."],
+  ["M","¿Y qué podemos hacer?"],
+  ["B","Cuidar el agua, no llevarnos a casa como mascotas y, si nos ven, reportarlo en la app sin molestarnos."],
+  ["M","¡Ya ven! Hasta Doña Bisagra es famosa."]
+ ]},
+ 11:{lugar:"Río Mezquites", titulo:"Otros vecinos y las conexiones de la vida", lineas:[
+  ["M","¿Pensaban que ya conocían a todos? ¡Pues no!"],
+  ["B","También vive aquí un pececito llamado Xiphophorus gordoni, el platy de Cuatro Ciénegas, chiquito y único de la región."],
+  ["M","Bonito, sí… pero sin mi estilo."],
+  ["E","Y hay caracolitos endémicos tan pequeños como un grano de arroz. Mojarrín los conoce bien…"],
+  ["M","¡Abuelo! ¡No cuente lo que desayuno!"],
+  ["B","Todos estamos conectados: los microorganismos alimentan a los caracoles, los caracoles a los peces, y las plantas nos dan refugio."],
+  ["E","Si una población cambia, las demás lo sienten. Por eso los científicos llaman a este lugar un laboratorio natural."],
+  ["M","¡O sea que no basta saber quién vive aquí, también cómo vivimos juntos!"],
+  ["B","¡Exactamente, mijito!"]
+ ]},
+ 12:{lugar:"Río Mezquites", titulo:"¡Tú también puedes investigar!", lineas:[
+  ["M","Bueno, ya sabemos un montón. ¿Ya sabemos todo sobre Cuatro Ciénegas?"],
+  ["E","(sonriendo) ¡Claro que no, muchacho! La ciencia nunca deja de hacerse preguntas."],
+  ["B","Y aquí todos podemos ayudar. ¿Vieron la pestaña de Reportes en la app?"],
+  ["M","¡Sí! Ahí puedes tomar una foto y contar lo que viste: basura, un animal, algo raro en el agua…"],
+  ["E","Cada reporte es un dato. Y muchos datos juntos ayudan a los cuidadores a saber qué lugares necesitan atención."],
+  ["B","Los monitores, además, revisan cosas como el pH del agua y califican la limpieza de cada lugar."],
+  ["M","¡O sea que cualquier visitante se puede volver científico por un día!"],
+  ["E","Así es. Una observación de hoy puede convertirse en un gran descubrimiento mañana."],
+  ["B","Solo recuerden: se observa y se reporta, pero no se toca ni se saca nada."]
+ ]},
+ 13:{lugar:"Río Mezquites", titulo:"El gran secreto de Cuatro Ciénegas", lineas:[
+  ["M","¡Y así llegamos al final de la aventura! ¿Verdad que disfrutaron conocerme?"],
+  ["B","Ay, Mojarrín. Lo importante es lo que aprendieron."],
+  ["E","(con voz tranquila) Conocieron un oasis en el desierto, un agua con secretos, habitantes invisibles y especies que no existen en ningún otro lugar."],
+  ["M","¡Y que unos bichitos chiquitos nos regalaron el oxígeno!"],
+  ["B","Y que todo está conectado. Si cuidamos el agua, cuidamos a todos."],
+  ["M","Abuelo, ¿y cuánto nos falta por descubrir?"],
+  ["E","Muchísimo, muchacho. Por eso este lugar hay que cuidarlo: es un libro que todavía no terminamos de leer."],
+  ["B","Y ahora, mijitos, revisen su pasaporte. Si juntaron todos los sellos…"],
+  ["M","¡Se ganaron la insignia de Guardián de Cuatro Ciénegas! Compártanla en sus redes con #GuardiánDeCuatroCiénegas. Y si salgo yo en la foto, mejor."],
+  ["B","¡Pero sin hacer desorden!"],
+  ["M","¡Ay, Doña Bisagra! ¡Ya va a sacar la chancla!"],
+  ["E","(riendo) Tranquilos, tranquilos… que todavía tenemos muchas historias que contar."],
+  ["T","¡Cuidar Cuatro Ciénegas es cuidar la vida, y cuidar la vida es cuidarnos a nosotros mismos! ¡Hasta la próxima, mijitos!"]
+ ]}
+};
+const TOTAL = Object.keys(GUION).length;
+
+/* ================================================================
+   Guardado en el celular (con protección si el navegador no deja)
+   ================================================================ */
+function leer(clave, porDefecto){
+  try{ const v = localStorage.getItem(clave); return v ? JSON.parse(v) : porDefecto; }
+  catch(e){ return porDefecto; }
+}
+function guardar(clave, valor){
+  try{ localStorage.setItem(clave, JSON.stringify(valor)); }catch(e){}
+}
+let sellos = leer("sellos", []);
+let reportes = leer("reportes", []);
+let conSonido = leer("sonido", true);
+
+const $ = id => document.getElementById(id);
+
+/* ================================================================
+   Pestañas
+   ================================================================ */
+document.querySelectorAll("nav button").forEach(b=>{
+  b.onclick = ()=> mostrarPestana(b.dataset.tab);
+});
+function mostrarPestana(t){
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("activo", b.dataset.tab===t));
+  ["tour","reportes","pasaporte"].forEach(x=>$("tab-"+x).classList.toggle("oculto", x!==t));
+  if(t!=="tour") detenerCamara();
+  if(t==="tour") pintarListaQR();
+  if(t==="pasaporte") pintarPasaporte();
+  if(t==="reportes") prepararReportes();
+  window.scrollTo(0,0);
+}
+function pintarListaQR(){
+  const caja = $("listaQR"); caja.innerHTML = "";
+  for(let n=1;n<=TOTAL;n++){
+    const b = document.createElement("button");
+    const visto = sellos.includes(n);
+    b.textContent = visto ? n : "🔒";
+    b.className = visto ? "visto" : "";
+    b.setAttribute("aria-label", visto ? "Ver escena " + n : "Escena " + n + " bloqueada");
+    b.onclick = ()=>{ if(visto) abrirQR(n); else alert("Escanea la placa " + n + " para desbloquear esta escena."); };
+    caja.appendChild(b);
+  }
+}
+
+/* ================================================================
+   VOCES (la voz automática del celular)
+   ================================================================ */
+const sintesis = window.speechSynthesis || null;
+let vozEsp = null;
+function elegirVoz(){
+  if(!sintesis) return;
+  const voces = sintesis.getVoices();
+  vozEsp = voces.find(v=>/^es[-_]MX/i.test(v.lang))
+        || voces.find(v=>/^es[-_](US|419)/i.test(v.lang))
+        || voces.find(v=>/^es/i.test(v.lang)) || null;
+}
+if(sintesis){ elegirVoz(); sintesis.onvoiceschanged = elegirVoz; }
+
+// Texto que se ve en pantalla: sin las acotaciones entre paréntesis
+function textoVisible(t){ return t.replace(/\([^)]*\)\s*/g, "").trim(); }
+// Texto que se dice en voz alta: arreglos para que suene bien
+function textoHablado(t){
+  return textoVisible(t)
+    .replace(/#GuardiánDeCuatroCiénegas/g, "numeral Guardián de Cuatro Ciénegas")
+    .replace(/\bNASA\b/g, "nasa")
+    .replace(/\bVIP\b/g, "vi ai pi")
+    .replace(/\b[A-ZÁÉÍÓÚÑ]{4,}\b/g, w => w.toLowerCase())
+    .replace(/…/g, ", ");
+}
+
+/* ================================================================
+   EL "VIDEO": escenario, personajes y reproducción automática
+   ================================================================ */
+let qrActual = null, linea = 0, pausado = true, turno = 0;
+let reloj = null, relojSeguro = null, actoresEnEscena = [];
+
+function abrirQR(n){
+  n = parseInt(n,10);
+  if(!GUION[n]){ alert("Este código no pertenece al recorrido."); return; }
+  detenerCamara();
+  $("escaner").classList.add("oculto");
+  $("inicioTour").classList.remove("oculto");
+  qrActual = n; linea = 0; pausado = true; turno++;
+  if(!sellos.includes(n)){ sellos.push(n); guardar("sellos", sellos); }
+
+  const g = GUION[n];
+  $("tituloEscena").textContent = "QR " + n + " · " + g.titulo;
+  $("inicioTitulo").textContent = g.titulo;
+  armarFondo(g.lugar);
+  armarActores(g.lineas);
+  $("quienHabla").textContent = ""; $("subtituloTexto").textContent = "";
+  $("barraLlena").style.width = "0";
+  $("capaFin").classList.add("oculto");
+  $("capaInicio").classList.remove("oculto");
+  $("btnPausa").textContent = "▶";
+  pintarSonido();
+  $("teatro").classList.remove("oculto");
+  document.body.style.overflow = "hidden";
+}
+
+function armarFondo(lugar){
+  const f = $("fondo"), d = $("decorado");
+  f.className = "fondo " + (lugar === "Poza Azul" ? "poza" : lugar === "Río Mezquites" ? "rio" : "entrada");
+  d.innerHTML = "";
+  if(lugar === "Entrada"){
+    d.innerHTML = '<div class="sol"></div>';
+  } else {
+    for(let i=0;i<3;i++){
+      const r = document.createElement("div"); r.className = "rayo";
+      r.style.left = (15 + i*30) + "%"; r.style.animationDelay = (i*1.5) + "s";
+      d.appendChild(r);
+    }
+    for(let i=0;i<12;i++){
+      const b = document.createElement("div"); b.className = "burbuja";
+      const s = 6 + Math.random()*16;
+      b.style.width = b.style.height = s + "px";
+      b.style.left = Math.random()*100 + "%";
+      b.style.animationDuration = (6 + Math.random()*8) + "s";
+      b.style.animationDelay = (-Math.random()*10) + "s";
+      d.appendChild(b);
+    }
+  }
+}
+
+function armarActores(lineas){
+  // Quién sale en esta escena, en el orden en que habla por primera vez
+  const orden = [];
+  lineas.forEach(l=>{
+    const quien = l[0] === "T" ? ["B","M","E"] : [l[0]];
+    quien.forEach(q=>{ if(!orden.includes(q)) orden.push(q); });
+  });
+  const pos = orden.length === 1 ? [28] : orden.length === 2 ? [4, 52] : [-4, 28, 60];
+  const caja = $("actores"); caja.innerHTML = ""; actoresEnEscena = [];
+  orden.forEach((clave, i)=>{
+    const p = PERSONAJES[clave];
+    const a = document.createElement("div");
+    a.className = "actor " + (p.nada ? "nada " : "") + (i < orden.length/2 ? "fuera-izq" : "fuera-der");
+    a.style.left = pos[i] + "%";
+    a.dataset.clave = clave; a.dataset.x = pos[i];
+    a.innerHTML = '<div class="mira"></div>';
+    const mira = a.querySelector(".mira");
+    const img = new Image();
+    img.className = "cuerpo"; img.alt = p.nombre;
+    img.onerror = ()=>{ const s = document.createElement("span"); s.className = "cuerpo"; s.textContent = p.emoji; mira.replaceChildren(s); };
+    sinFondo(p.img).then(src=>{ img.src = src; });
+    mira.appendChild(img);
+    caja.appendChild(a);
+    actoresEnEscena.push(a);
+    // Entran caminando/nadando desde los lados
+    setTimeout(()=>a.classList.remove("fuera-izq","fuera-der"), 250 + i*350);
+  });
+}
+
+// Quita el fondo blanco de los dibujos para que se vean sobre el escenario
+const cacheSinFondo = {};
+function sinFondo(src){
+  if(cacheSinFondo[src]) return cacheSinFondo[src];
+  cacheSinFondo[src] = new Promise(listo=>{
+    const im = new Image();
+    im.onload = ()=>{
+      try{
+        const esc = Math.min(1, 900 / Math.max(im.width, im.height));
+        const w = Math.round(im.width*esc), h = Math.round(im.height*esc);
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        const ctx = c.getContext("2d"); ctx.drawImage(im,0,0,w,h);
+        const d = ctx.getImageData(0,0,w,h), px = d.data;
+        const claro = i => px[i]>228 && px[i+1]>228 && px[i+2]>228;
+        const visto = new Uint8Array(w*h), pila = [];
+        for(let x=0;x<w;x++){ pila.push(x, (h-1)*w+x); }
+        for(let y=0;y<h;y++){ pila.push(y*w, y*w+w-1); }
+        // Si el dibujo ya tiene fondo transparente, no hay nada que hacer
+        if(px[3] < 20 && px[(w*h-1)*4+3] < 20){ listo(src); return; }
+        while(pila.length){
+          const k = pila.pop();
+          if(visto[k]) continue; visto[k] = 1;
+          const i = k*4;
+          if(!claro(i)) continue;
+          px[i+3] = 0;
+          const x = k % w, y = (k - x) / w;
+          if(x>0) pila.push(k-1); if(x<w-1) pila.push(k+1);
+          if(y>0) pila.push(k-w); if(y<h-1) pila.push(k+w);
+        }
+        // Suaviza el borde: los pixeles claros junto a lo transparente quedan medio transparentes
+        for(let k=0;k<w*h;k++){
+          const i = k*4; if(px[i+3]===0) continue;
+          const x = k % w;
+          const vecinoTransp = (x>0 && px[i-1]===0) || (x<w-1 && px[i+7]===0) ||
+                               (k>=w && px[i-w*4+3]===0) || (k<w*h-w && px[i+w*4+3]===0);
+          if(vecinoTransp && px[i]>200 && px[i+1]>200 && px[i+2]>200) px[i+3] = 110;
+        }
+        ctx.putImageData(d,0,0);
+        listo(c.toDataURL("image/png"));
+      }catch(e){ listo(src); }
+    };
+    im.onerror = ()=> listo(src);
+    im.src = src;
+  });
+  return cacheSinFondo[src];
+}
+
+function marcarQuienHabla(clave){
+  const todos = clave === "T";
+  const hablante = actoresEnEscena.find(a=>a.dataset.clave === clave);
+  const xHablante = hablante ? parseFloat(hablante.dataset.x) : 33;
+  actoresEnEscena.forEach(a=>{
+    const habla = todos || a === hablante;
+    a.classList.toggle("habla", habla);
+    a.classList.toggle("escucha", !habla);
+    // Todos se miran entre ellos: el que habla mira a los demás y los demás lo miran a él
+    // (los dibujos originales miran hacia la derecha)
+    const mira = a.querySelector(".mira");
+    const miX = parseFloat(a.dataset.x);
+    const otros = actoresEnEscena.filter(o=>o!==a).map(o=>parseFloat(o.dataset.x));
+    let haciaX = miX + 1;
+    if(!habla) haciaX = xHablante;
+    else if(otros.length) haciaX = otros.reduce((s,x)=>s+x,0) / otros.length;
+    mira.classList.toggle("voltea", haciaX < miX);
+    if(habla){ a.classList.remove("salto"); void a.offsetWidth; a.classList.add("salto"); }
+  });
+}
+function nadieHabla(){
+  actoresEnEscena.forEach(a=>{ a.classList.remove("habla","escucha"); a.querySelector(".mira").classList.remove("voltea"); });
+}
+
+function decirLinea(){
+  clearTimeout(reloj); clearTimeout(relojSeguro);
+  const mio = ++turno;
+  const lineas = GUION[qrActual].lineas;
+  const [clave, texto] = lineas[linea];
+  const p = PERSONAJES[clave];
+
+  marcarQuienHabla(clave);
+  const q = $("quienHabla");
+  q.textContent = p.nombre; q.style.background = p.color;
+  const s = $("subtituloTexto");
+  s.textContent = textoVisible(texto);
+  s.style.animation = "none"; void s.offsetWidth; s.style.animation = "";
+  $("barraLlena").style.width = ((linea+1) / lineas.length * 100) + "%";
+
+  const visible = textoVisible(texto);
+  const tiempoLectura = Math.max(2600, visible.length * 65 / p.voz.rate);
+
+  if(conSonido && sintesis){
+    const u = new SpeechSynthesisUtterance(textoHablado(texto));
+    u.lang = vozEsp ? vozEsp.lang : "es-MX";
+    if(vozEsp) u.voice = vozEsp;
+    u.rate = p.voz.rate; u.pitch = p.voz.pitch;
+    u.onend = ()=> lineaTerminada(mio);
+    u.onerror = ()=> lineaTerminada(mio);
+    sintesis.cancel();
+    setTimeout(()=>{ if(mio === turno) sintesis.speak(u); }, 60);
+    // Por si el celular nunca avisa que terminó de hablar
+    relojSeguro = setTimeout(()=> lineaTerminada(mio), tiempoLectura * 2.5 + 4000);
+  } else {
+    reloj = setTimeout(()=> lineaTerminada(mio), tiempoLectura);
+  }
+}
+
+function lineaTerminada(mio){
+  if(mio !== turno || pausado) return;
+  turno++;
+  clearTimeout(reloj); clearTimeout(relojSeguro);
+  const total = GUION[qrActual].lineas.length;
+  const siguienteTurno = turno;
+  reloj = setTimeout(()=>{
+    if(siguienteTurno !== turno || pausado) return;
+    if(linea < total-1){ linea++; decirLinea(); }
+    else terminarEscena();
+  }, 450);
+}
+
+let vozDesbloqueada = false;
+function reproducir(){
+  // iPhone solo deja hablar si el primer sonido sale justo al tocar la pantalla
+  if(sintesis && conSonido && !vozDesbloqueada){
+    try{ const u = new SpeechSynthesisUtterance(" "); u.volume = 0; sintesis.speak(u); }catch(e){}
+    vozDesbloqueada = true;
+  }
+  pausado = false;
+  $("btnPausa").textContent = "⏸";
+  $("capaInicio").classList.add("oculto");
+  $("capaFin").classList.add("oculto");
+  decirLinea();
+}
+function pausar(){
+  pausado = true; turno++;
+  clearTimeout(reloj); clearTimeout(relojSeguro);
+  if(sintesis) sintesis.cancel();
+  $("btnPausa").textContent = "▶";
+  nadieHabla();
+}
+function irA(n){
+  const total = GUION[qrActual].lineas.length;
+  linea = Math.min(Math.max(0, n), total-1);
+  if(pausado){ reproducir(); } else decirLinea();
+}
+
+function terminarEscena(){
+  pausar();
+  const faltan = TOTAL - sellos.length;
+  $("finNumero").textContent = qrActual;
+  $("finTitulo").textContent = "¡Ganaste el sello " + qrActual + "!";
+  $("finTexto").textContent = faltan > 0
+    ? "Llevas " + sellos.length + " de " + TOTAL + ". ¡Te faltan " + faltan + "!"
+    : "¡Juntaste todos los sellos! Ve a tu pasaporte por tu insignia de Guardián.";
+  $("capaFin").classList.remove("oculto");
+  lanzarConfeti();
+}
+function lanzarConfeti(){
+  const colores = ["#ffd25e","#e0457b","#2bb3e6","#3a9a5b","#fff"];
+  const esc = $("escenario");
+  for(let i=0;i<40;i++){
+    const c = document.createElement("div"); c.className = "confeti";
+    c.style.left = Math.random()*100 + "%";
+    c.style.background = colores[i % colores.length];
+    c.style.animationDuration = (1.8 + Math.random()*1.8) + "s";
+    c.style.animationDelay = (Math.random()*0.6) + "s";
+    esc.appendChild(c);
+    setTimeout(()=>c.remove(), 4200);
+  }
+}
+
+function cerrarTeatro(){
+  pausar();
+  $("teatro").classList.add("oculto");
+  document.body.style.overflow = "";
+  qrActual = null;
+  pintarListaQR();
+}
+function pintarSonido(){ $("btnSonido").textContent = conSonido ? "🔊" : "🔇"; }
+
+$("btnPlayInicio").onclick = reproducir;
+$("btnPausa").onclick = ()=> pausado ? reproducir() : pausar();
+$("btnAnterior").onclick = ()=> irA(linea - 1);
+$("btnSiguienteL").onclick = ()=>{
+  const total = GUION[qrActual].lineas.length;
+  if(linea >= total-1) terminarEscena(); else irA(linea + 1);
+};
+$("btnSonido").onclick = ()=>{
+  conSonido = !conSonido; guardar("sonido", conSonido); pintarSonido();
+  if(!pausado) decirLinea();
+};
+$("btnCerrar").onclick = cerrarTeatro;
+$("btnFinRepetir").onclick = ()=>{ linea = 0; armarActores(GUION[qrActual].lineas); setTimeout(reproducir, 900); $("capaFin").classList.add("oculto"); };
+$("btnFinEscanear").onclick = ()=>{ cerrarTeatro(); mostrarPestana("tour"); abrirEscaner(); };
+$("btnFinPasaporte").onclick = ()=>{ cerrarTeatro(); mostrarPestana("pasaporte"); };
+$("btnBienvenida").onclick = ()=> abrirQR(1);
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden && qrActual && !pausado) pausar(); });
+
+/* ================================================================
+   Escáner de QR con la cámara
+   ================================================================ */
+let flujo = null, buscando = false;
+const lienzoQR = document.createElement("canvas");
+$("btnEscanear").onclick = abrirEscaner;
+async function abrirEscaner(){
+  $("inicioTour").classList.add("oculto");
+  $("escaner").classList.remove("oculto");
+  $("msgEscaner").textContent = "Apunta la cámara al código QR de la placa.";
+  try{
+    flujo = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+    const v = $("video"); v.srcObject = flujo; await v.play();
+    buscando = true; requestAnimationFrame(buscarQR);
+  }catch(e){
+    $("msgEscaner").textContent = "No pude abrir la cámara. Revisa que le diste permiso, o escanea la placa con la cámara normal del celular.";
+  }
+}
+function buscarQR(){
+  if(!buscando) return;
+  const v = $("video");
+  if(v.readyState === v.HAVE_ENOUGH_DATA && window.jsQR){
+    lienzoQR.width = v.videoWidth; lienzoQR.height = v.videoHeight;
+    const ctx = lienzoQR.getContext("2d", {willReadFrequently:true});
+    ctx.drawImage(v,0,0);
+    const imagen = ctx.getImageData(0,0,lienzoQR.width,lienzoQR.height);
+    const codigo = jsQR(imagen.data, imagen.width, imagen.height);
+    if(codigo && codigo.data){
+      const n = numeroDeQR(codigo.data);
+      if(n){ abrirQR(n); return; }
+      $("msgEscaner").textContent = "Ese código no es de nuestro recorrido.";
+    }
+  }
+  requestAnimationFrame(buscarQR);
+}
+// Los QR de las placas llevan una dirección que termina en ?qr=NÚMERO
+function numeroDeQR(texto){
+  const m = String(texto).match(/[?&]qr=(\d+)/);
+  return m ? parseInt(m[1],10) : null;
+}
+function detenerCamara(){
+  buscando = false;
+  if(flujo){ flujo.getTracks().forEach(t=>t.stop()); flujo = null; }
+}
+$("btnCancelarEscaner").onclick = ()=>{
+  detenerCamara();
+  $("escaner").classList.add("oculto");
+  $("inicioTour").classList.remove("oculto");
+};
+
+/* ================================================================
+   Reportes
+   ================================================================ */
+let fotoDatos = "";
+function prepararReportes(){
+  const sel = $("lugar");
+  if(!sel.options.length){
+    for(const n in GUION){
+      const o = document.createElement("option");
+      o.value = n; o.textContent = GUION[n].lugar + " · QR " + n + " (" + GUION[n].titulo + ")";
+      sel.appendChild(o);
+    }
+  }
+  if(sellos.length) sel.value = sellos[sellos.length-1];
+  pintarReportes();
+}
+$("foto").onchange = e=>{
+  const archivo = e.target.files[0]; if(!archivo) return;
+  const img = new Image();
+  img.onload = ()=>{
+    const max = 900, escala = Math.min(1, max/Math.max(img.width,img.height));
+    const c = document.createElement("canvas");
+    c.width = img.width*escala; c.height = img.height*escala;
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    fotoDatos = c.toDataURL("image/jpeg",0.7);
+    $("vistaFoto").src = fotoDatos; $("vistaFoto").classList.remove("oculto");
+  };
+  img.src = URL.createObjectURL(archivo);
+};
+$("btnEnviar").onclick = async ()=>{
+  const r = {
+    fecha: new Date().toLocaleString("es-MX"),
+    tipo: $("tipo").value,
+    lugar: $("lugar").options[$("lugar").selectedIndex].text,
+    descripcion: $("descripcion").value.trim(),
+    limpieza: $("limpieza").value,
+    ph: $("ph").value.trim(),
+    foto: fotoDatos
+  };
+  if(!r.descripcion && !r.foto){ aviso("Escribe algo o agrega una foto, por favor."); return; }
+  let enviado = false;
+  if(URL_REPORTES){
+    try{
+      await fetch(URL_REPORTES,{method:"POST",mode:"no-cors",body:JSON.stringify(r)});
+      enviado = true;
+    }catch(e){}
+  }
+  reportes.unshift({...r, foto: r.foto ? "sí" : "", enviado});
+  guardar("reportes", reportes.slice(0,30));
+  $("descripcion").value = ""; $("ph").value = ""; $("foto").value = "";
+  fotoDatos = ""; $("vistaFoto").classList.add("oculto");
+  aviso(enviado ? "¡Gracias, Guardián! Tu reporte se envió." :
+    "¡Gracias, Guardián! Tu reporte quedó guardado en este celular.");
+  pintarReportes();
+};
+function aviso(t){ const a=$("msgReporte"); a.textContent=t; a.style.display="block"; }
+function pintarReportes(){
+  const caja = $("listaReportes");
+  if(!reportes.length){ caja.innerHTML = '<p class="progreso">Todavía no tienes reportes.</p>'; return; }
+  caja.innerHTML = "";
+  reportes.forEach(r=>{
+    const d = document.createElement("div"); d.className = "reporte";
+    d.textContent = r.fecha + " · " + r.tipo + " · " + r.lugar + (r.descripcion ? " · " + r.descripcion : "") + (r.foto ? " · 📷" : "");
+    caja.appendChild(d);
+  });
+}
+
+/* ================================================================
+   Pasaporte e insignia
+   ================================================================ */
+function pintarPasaporte(){
+  const caja = $("sellos"); caja.innerHTML = "";
+  for(let n=1;n<=TOTAL;n++){
+    const s = document.createElement("div");
+    s.className = "sello" + (sellos.includes(n) ? " si" : "");
+    s.textContent = sellos.includes(n) ? "✔" : n;
+    caja.appendChild(s);
+  }
+  const faltan = TOTAL - sellos.length;
+  $("msgSellos").textContent = faltan>0
+    ? "Llevas " + sellos.length + " de " + TOTAL + " sellos. ¡Te faltan " + faltan + "!"
+    : "¡Completaste tu pasaporte!";
+  $("insignia").classList.toggle("oculto", faltan>0);
+}
+function cargarImg(src){
+  return new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src=src; });
+}
+$("btnCrearInsignia").onclick = async ()=>{
+  const nombre = $("nombreGuardian").value.trim() || "Guardián";
+  const c = $("lienzo"), ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0,0,0,1080);
+  g.addColorStop(0,"#2bb3e6"); g.addColorStop(1,"#0a6fa8");
+  ctx.fillStyle = g; ctx.fillRect(0,0,1080,1080);
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(540,470,330,0,Math.PI*2); ctx.fill();
+  const imgs = await Promise.all(["estromi.png","bisagra.png","mojarrin.png"].map(cargarImg));
+  const pos = [[260,330],[540,300],[820,330]];
+  imgs.forEach((im,i)=>{
+    if(!im) return;
+    const h = 260, w = im.width*(h/im.height);
+    ctx.drawImage(im, pos[i][0]-w/2, pos[i][1]-h/2+80, w, h);
+  });
+  ctx.fillStyle = "#0a6fa8"; ctx.textAlign = "center";
+  ctx.font = "bold 58px system-ui, sans-serif"; ctx.fillText("GUARDIÁN DE", 540, 650);
+  ctx.fillText("CUATRO CIÉNEGAS", 540, 720);
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 64px system-ui, sans-serif"; ctx.fillText(nombre, 540, 900);
+  ctx.font = "40px system-ui, sans-serif"; ctx.fillText("#GuardiánDeCuatroCiénegas", 540, 970);
+  ctx.font = "30px system-ui, sans-serif"; ctx.fillText("Equipo Blue Ants 🐜", 540, 1030);
+  c.classList.remove("oculto"); $("btnCompartir").classList.remove("oculto");
+};
+$("btnCompartir").onclick = ()=>{
+  $("lienzo").toBlob(async blob=>{
+    const archivo = new File([blob],"insignia-guardian.png",{type:"image/png"});
+    const texto = "¡Soy Guardián de Cuatro Ciénegas! #GuardiánDeCuatroCiénegas";
+    if(navigator.canShare && navigator.canShare({files:[archivo]})){
+      try{ await navigator.share({files:[archivo], text:texto}); return; }catch(e){ return; }
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "insignia-guardian.png"; a.click();
+    alert("Se descargó tu insignia. Súbela a tus redes con #GuardiánDeCuatroCiénegas");
+  });
+};
+
+/* ================================================================
+   Arranque: si la app se abrió desde un QR, abre esa escena
+   ================================================================ */
+pintarListaQR();
+const desdeQR = numeroDeQR(location.search);
+if(desdeQR) abrirQR(desdeQR);
+</script>
+</body>
+</html>
