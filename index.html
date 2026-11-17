@@ -290,7 +290,7 @@
     <div class="tarjeta" id="inicioTour">
       <p><b>¿Cómo funciona?</b> Busca las placas con código QR en Poza Azul y el Río Mezquites.
       Escanéalas y Doña Bisagra, Mojarrín y Don Estromi te contarán los secretos del lugar.
-      ¡Sube el volumen! Al terminar cada escena viene un reto: si lo pasas, ganas una insignia secreta.</p>
+      ¡Sube el volumen! Al terminar cada escena ganas una insignia secreta.</p>
       <button class="boton" id="btnEscanear">📷 Escanear un código QR</button>
       <button class="boton sec" id="btnBienvenida">▶️ Ver la bienvenida</button>
     </div>
@@ -925,8 +925,9 @@ function irA(n){
 function terminarEscena(){
   if(!$("capaFin").classList.contains("oculto") || retoQR) return;   // ya está el premio o el reto
   pausar();
-  if(sellos.includes(qrActual)) mostrarPremio(qrActual, false);
-  else abrirReto(qrActual);          // primero hay que pasar el reto de esta escena
+  const nueva = !sellos.includes(qrActual);
+  if(nueva){ sellos.push(qrActual); guardar("sellos", sellos); }
+  mostrarPremio(qrActual, nueva);
 }
 function mostrarPremio(n, nueva){
   const b = INSIGNIAS[n];
@@ -988,10 +989,17 @@ document.addEventListener("visibilitychange", ()=>{ if(document.hidden && qrActu
    MÚSICA DE FONDO (archivo musica.mp3 junto al index.html)
    Suena en toda la app; se pausa en las escenas y cuando alguien habla.
    ================================================================ */
-const musica = new Audio("musica.mp3");
+// La app prueba estos nombres en orden y usa el primero que encuentre
+const ARCHIVOS_MUSICA = ["musica.mp3", "musica.m4a", "musica.MP3", "musica.M4A", "musica.wav", "musica.aac"];
+let intentoMusica = 0;
+const musica = new Audio(ARCHIVOS_MUSICA[0]);
 musica.loop = true; musica.preload = "auto"; musica.volume = 0.35;
 let conMusica = leer("musica", true), musicaExiste = true, enEscena = false, hablando = false;
-musica.addEventListener("error", ()=>{ musicaExiste = false; $("btnMusica").classList.add("oculto"); });
+musica.addEventListener("error", ()=>{
+  intentoMusica++;
+  if(intentoMusica < ARCHIVOS_MUSICA.length){ musica.src = ARCHIVOS_MUSICA[intentoMusica]; musica.load(); return; }
+  musicaExiste = false; $("btnMusica").classList.add("oculto");
+});
 function ajustarMusica(){
   if(!musicaExiste) return;
   const debeSonar = conMusica && !enEscena && !hablando;
@@ -1278,7 +1286,7 @@ function pintarPasaporte(){
   const caja = $("sellos"); caja.innerHTML = "";
   for(let n=1;n<=TOTAL;n++){
     caja.appendChild(crearMedalla(INSIGNIAS[n], sellos.includes(n), "QR " + n,
-      "Es un misterio… Termina la escena de la placa " + n + " y pasa su reto para descubrir esta insignia."));
+      "Es un misterio… Termina la escena de la placa " + n + " para descubrir esta insignia."));
   }
   const faltan = TOTAL - sellos.length;
   $("msgSellos").textContent = faltan>0
