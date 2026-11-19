@@ -4,7 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guardianes de Cuatro Ciénegas</title>
-<meta name="theme-color" content="#0a6fa8">
+<meta name="theme-color" content="#0b6e99">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Guardianes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <style>
   :root{
@@ -269,30 +278,195 @@
   @media (prefers-reduced-motion:reduce){
     .cuerpo,.actor.habla .cuerpo,.burbuja,.sol,.play{animation:none!important}
   }
+
+  /* =====================================================================
+     DISEÑO NUEVO (versión 6): letra, colores de Cuatro Ciénegas, barra de
+     abajo, portada, reglamento y firma
+     ===================================================================== */
+  :root{
+    --azul:#0b6e99; --azul2:#19b8c9; --turquesa:#2ec4d6; --arena:#f6ecd8; --arena2:#ead6b0;
+    --cactus:#3f8f4e; --verde:#3f8f4e; --texto:#12324a; --gris:#5f7482; --tarjeta:#fffdf8; --naranja:#f29a3a;
+  }
+  body{font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--texto);
+    background:var(--arena);padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  h1,h2,h3,.boton,.titulo-app b,#navAbajo span,.nombre-insignia,#tituloEscena,#quienHabla,
+  .capa h2,.etiqueta-nueva,.medalla span{font-family:"Baloo 2","Nunito",system-ui,sans-serif}
+
+  /* Encabezado */
+  header{background:linear-gradient(135deg,#0b6e99,#19b8c9);padding:12px 16px 0;
+    padding-top:calc(12px + env(safe-area-inset-top));position:sticky;top:0;z-index:5}
+  .barra{display:flex;align-items:center;gap:10px;padding-bottom:4px}
+  .logo-chico{width:42px;height:42px;border-radius:50%;overflow:hidden;background:#fff;flex-shrink:0;
+    box-shadow:0 0 0 2px rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+  .logo-chico img,.logo-grande img{width:118%;height:118%;object-fit:cover}
+  .sin-logo img{display:none}
+  .sin-logo::after{content:"BA";font-family:"Baloo 2",sans-serif;font-weight:800;color:var(--azul)}
+  .titulo-app{flex:1;line-height:1.02;color:#fff}
+  .titulo-app b{display:block;font-size:1.3rem}
+  .titulo-app small{font-size:.8rem;font-weight:700;opacity:.92}
+  #btnMusica{margin:0;font-weight:800;font-family:"Nunito",sans-serif}
+  .montes{display:block;width:calc(100% + 32px);height:22px;margin:0 -16px -1px}
+  main{padding:14px 16px 24px}
+
+  /* Tarjetas y botones */
+  .tarjeta{background:var(--tarjeta);border-radius:22px;padding:18px;margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(18,50,74,.08);border:1px solid rgba(18,50,74,.05)}
+  .tarjeta h2,.tarjeta h3{margin-top:0;line-height:1.15;color:var(--texto)}
+  .boton{border-radius:16px;padding:14px;font-size:1.05rem;box-shadow:0 4px 0 rgba(0,0,0,.14);transition:transform .1s}
+  .boton:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
+  .boton.sec{background:#e6f3f6;color:var(--azul);box-shadow:none}
+  .boton.verde{background:var(--cactus)}
+  select,textarea,input[type=text]{border-radius:12px;border:1.5px solid #d9cfbb;background:#fff;color:var(--texto)}
+  label{color:var(--texto)}
+
+  /* Portada del recorrido (pestaña Explorar) */
+  .hero{position:relative;overflow:hidden;border-radius:26px;padding:22px 20px 24px;margin-bottom:14px;color:#fff;
+    background:radial-gradient(circle at 100% 0%,rgba(255,224,110,.9) 0 46px,rgba(255,224,110,.25) 47px 62px,transparent 63px),
+               linear-gradient(160deg,#2ec4d6,#0b6e99 72%);box-shadow:0 10px 24px rgba(11,110,153,.3)}
+  .hero h2{position:relative;margin:6px 0 6px;font-size:1.65rem;line-height:1.05;color:#fff}
+  .hero p{position:relative;margin:0 0 16px;font-weight:600;opacity:.96}
+  .hero-olas{position:absolute;left:0;right:0;bottom:0;width:100%;height:80px;pointer-events:none}
+  .hero-etiqueta{position:relative;display:inline-block;background:rgba(255,255,255,.22);padding:3px 10px;border-radius:20px;
+    font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase}
+  .hero-etiqueta.oscuro{background:#e6f3f6;color:var(--azul)}
+  .boton-escanear{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;
+    border-radius:18px;padding:16px;background:#fff;color:var(--azul);font-family:"Baloo 2",sans-serif;font-weight:800;
+    font-size:1.25rem;box-shadow:0 6px 0 rgba(0,0,0,.15);cursor:pointer}
+  .boton-escanear:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.15)}
+  .boton-escanear svg{width:28px;height:28px}
+  .boton-claro{position:relative;display:block;width:100%;margin-top:10px;border:2px solid rgba(255,255,255,.75);
+    background:transparent;color:#fff;border-radius:16px;padding:11px;font-weight:800;font-family:"Baloo 2",sans-serif;
+    font-size:1.02rem;cursor:pointer}
+  .boton-claro.chico{display:inline-block;width:auto;margin:8px 0 0;padding:5px 14px;font-size:.85rem;color:var(--azul);border-color:#bcdfe7}
+
+  /* Progreso */
+  .fila-prog{display:flex;justify-content:space-between;align-items:baseline;font-weight:800}
+  .fila-prog b{font-family:"Baloo 2",sans-serif;font-size:1.1rem}
+  .fila-prog span{color:var(--azul)}
+  .barra-prog{height:12px;border-radius:12px;background:#ece3d0;margin-top:8px;overflow:hidden}
+  #progBarra{height:100%;width:0;border-radius:12px;background:linear-gradient(90deg,#3f8f4e,#2ec4d6);transition:width .6s}
+
+  /* Escenas */
+  .lista-qr{grid-template-columns:repeat(2,1fr);gap:10px}
+  .lista-qr .escena-tile{display:flex;align-items:center;gap:10px;text-align:left;border:0;border-radius:16px;padding:10px 12px;
+    background:#f1ebdf;color:#9a8f7c;font:inherit;cursor:pointer;min-height:60px}
+  .lista-qr .escena-tile .num{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+    justify-content:center;background:#e2d8c4;font-weight:800;font-family:"Baloo 2",sans-serif;font-size:1rem}
+  .lista-qr .escena-tile .num svg{width:16px;height:16px}
+  .lista-qr .escena-tile .tit{font-size:.78rem;font-weight:800;line-height:1.15}
+  .lista-qr .escena-tile.visto{background:#e3f4f6;color:var(--texto)}
+  .lista-qr .escena-tile.visto .num{background:var(--azul2);color:#fff}
+  .lista-qr .escena-tile.ganada .num{background:var(--cactus)}
+
+  /* Barra de abajo, como en una app */
+  #navAbajo{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-around;gap:4px;
+    background:rgba(255,253,248,.97);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    border-top:1px solid rgba(18,50,74,.08);padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -4px 16px rgba(18,50,74,.08)}
+  #navAbajo button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;border:0;background:none;
+    color:#8a9aa5;padding:6px 2px 4px;border-radius:14px;font-size:.74rem;font-weight:800;cursor:pointer;border-bottom:0}
+  #navAbajo svg{width:24px;height:24px}
+  #navAbajo button.activo{color:var(--azul);background:#e3f4f6}
+
+  /* Reglamento */
+  .reglas-clave{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+  .reglas-clave li{display:flex;gap:10px;align-items:flex-start;background:#f2f8f3;border-radius:14px;padding:10px 12px;
+    font-weight:700;font-size:.92rem;line-height:1.3}
+  .reglas-clave li i{font-style:normal;flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--cactus);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;font-family:"Baloo 2",sans-serif}
+  .reg-intro p{font-size:.9rem;line-height:1.45}
+  details.cap{border-top:1px solid #eee3cf;padding:10px 0}
+  details.cap summary{font-family:"Baloo 2",sans-serif;font-weight:800;color:var(--azul);cursor:pointer;list-style:none;
+    display:flex;justify-content:space-between;gap:8px;line-height:1.2}
+  details.cap summary::-webkit-details-marker{display:none}
+  details.cap summary::after{content:"+";font-size:1.3rem;line-height:1}
+  details.cap[open] summary::after{content:"–"}
+  details.cap p,details.cap li{font-size:.9rem;line-height:1.45;margin:6px 0}
+  details.cap ul{padding-left:20px;margin:4px 0 8px}
+  .lema{background:linear-gradient(160deg,#3f8f4e,#2b6e3b);color:#fff;text-align:center;font-family:"Baloo 2",sans-serif;
+    font-size:1.1rem;font-weight:700;line-height:1.3}
+  .firma-hecha{display:flex;gap:12px;align-items:center;background:#eaf6ee;border-radius:16px;padding:12px;margin-top:12px}
+  .firma-hecha img{width:110px;height:56px;object-fit:contain;background:#fff;border-radius:10px;border:1px solid #d7e9dc;flex-shrink:0}
+  .firma-hecha b{display:block}
+  .firma-hecha small{color:var(--gris);font-weight:700}
+  .carta-guardada{margin-top:10px}
+  .carta-guardada img{display:block;max-width:240px;width:100%;background:#fff;border-radius:10px;border:1px solid #eee;margin-top:6px}
+
+  /* Pantallas completas: portada y firma */
+  .pantalla{position:fixed;inset:0;z-index:80;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #portada{background:linear-gradient(170deg,#2ec4d6 0%,#0b6e99 55%,#08405f 100%);color:#fff;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .5s}
+  #portada.saliendo{opacity:0}
+  .portada-fondo{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .portada-fondo svg{position:absolute;left:0;bottom:0;width:100%;height:34%}
+  .portada-sol{position:absolute;top:7%;right:10%;width:84px;height:84px;border-radius:50%;
+    background:radial-gradient(#fff6c8,#ffd25e);box-shadow:0 0 60px rgba(255,210,94,.7);animation:latido 4s ease-in-out infinite}
+  .portada-contenido{position:relative;max-width:420px;width:100%;animation:aparece .8s ease}
+  .logo-grande{width:176px;height:176px;margin:0 auto 18px;border-radius:50%;overflow:hidden;background:#fff;
+    box-shadow:0 0 0 6px rgba(255,255,255,.35),0 18px 40px rgba(0,0,0,.35);display:flex;align-items:center;
+    justify-content:center;animation:flotaMedalla 4s ease-in-out infinite}
+  #portada h1{font-size:2.5rem;line-height:.98;margin:12px 0 8px;text-shadow:0 3px 12px rgba(0,0,0,.25)}
+  #portada p{font-weight:700;opacity:.95;margin:0 0 26px}
+  .boton-escanear.grande{font-size:1.35rem;padding:18px}
+  #firma{background:var(--arena);padding:16px;padding-top:calc(16px + env(safe-area-inset-top))}
+  .firma-caja{max-width:560px;margin:0 auto 24px;background:var(--tarjeta);border-radius:24px;padding:20px;
+    box-shadow:0 10px 30px rgba(18,50,74,.12)}
+  .firma-caja h2{margin:8px 0 4px;font-size:1.7rem;line-height:1.05}
+  .firma-caja h3{margin:16px 0 8px}
+  .firma-caja > div > p{margin:0 0 6px;line-height:1.4}
+  .firma-logo{width:64px;height:64px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 0 0 3px #e6f3f6;
+    display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+  .firma-logo img{width:118%;height:118%;object-fit:cover}
+  .pasos{display:flex;gap:6px;margin-bottom:4px}
+  .paso{font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:20px;background:#efe7d6;color:#9a8f7c}
+  .paso.activo{background:var(--azul);color:#fff}
+  details.ver-todo{margin-top:14px;border:2px solid #e3eef1;border-radius:16px;padding:10px 12px}
+  details.ver-todo > summary{font-weight:800;color:var(--azul);cursor:pointer}
+  #regCopia{max-height:50vh;overflow-y:auto;margin-top:8px}
+  .carta{background:#fbf6ea;border-radius:14px;padding:12px 14px;margin-top:14px;font-size:.88rem;line-height:1.45;
+    border-left:4px solid var(--naranja)}
+  .carta ol{padding-left:20px;margin:6px 0}
+  .carta p{margin:6px 0}
+  .lienzo-firma{position:relative;background:#fff;border:2px dashed #b9d7df;border-radius:16px;height:170px;touch-action:none}
+  .lienzo-firma canvas{width:100%;height:100%;display:block;border-radius:14px;max-width:none}
+  .lienzo-firma .guia{position:absolute;left:24px;right:24px;bottom:16px;text-align:center;color:#a9bcc5;font-weight:700;
+    pointer-events:none;border-top:1.5px solid #dbe8ec;padding-top:4px}
+  .check{display:flex;gap:10px;align-items:flex-start;font-weight:700;margin-top:16px;line-height:1.3}
+  .check input{width:22px;height:22px;flex-shrink:0;margin:0;accent-color:var(--cactus)}
+  .listo{text-align:center;padding:16px 0 4px}
+  .palomita{width:86px;height:86px;margin:0 auto 10px;border-radius:50%;background:var(--cactus);color:#fff;display:flex;
+    align-items:center;justify-content:center;animation:estampa .6s cubic-bezier(.3,1.6,.5,1)}
+  .palomita svg{width:48px;height:48px}
+  .modal-caja,.capa{font-family:"Nunito",system-ui,sans-serif}
 </style>
 </head>
 <body>
 <header>
-  <div class="fila">
-    <h1>🐜 Guardianes de Cuatro Ciénegas</h1>
+  <div class="barra">
+    <div class="logo-chico"><img src="logo.png" alt="" onerror="this.parentNode.classList.add('sin-logo')"></div>
+    <div class="titulo-app"><b>Guardianes</b><small>de Cuatro Ciénegas</small></div>
     <button id="btnMusica" aria-label="Música">🎵 Música</button>
   </div>
-  <nav>
-    <button data-tab="tour" class="activo">📷 Escanear</button>
-    <button data-tab="pasaporte">🏅 Pasaporte</button>
-    <button data-tab="reportes">📝 Reportes</button>
-  </nav>
+  <svg class="montes" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 L0 28 L40 16 L70 25 L110 8 L150 23 L190 13 L230 27 L270 11 L310 25 L350 15 L400 25 L400 40 Z" fill="#f6ecd8"/></svg>
 </header>
 
 <main>
   <!-- TOUR / ESCÁNER -->
   <section id="tab-tour">
-    <div class="tarjeta" id="inicioTour">
-      <p><b>¿Cómo funciona?</b> Busca las placas con código QR en Poza Azul y el Río Mezquites.
-      Escanéalas y Doña Bisagra, Mojarrín y Don Estromi te contarán los secretos del lugar.
-      ¡Sube el volumen! Al terminar cada escena ganas una insignia secreta.</p>
-      <button class="boton" id="btnEscanear">📷 Escanear un código QR</button>
-      <button class="boton sec" id="btnBienvenida">▶️ Ver la bienvenida</button>
+    <div class="hero" id="inicioTour">
+      <svg class="hero-olas" viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 40 Q50 18 100 40 T200 40 T300 40 T400 40 V80 H0Z" fill="rgba(255,255,255,.12)"/>
+        <path d="M0 56 Q50 36 100 56 T200 56 T300 56 T400 56 V80 H0Z" fill="rgba(255,255,255,.16)"/>
+      </svg>
+      <span class="hero-etiqueta">Poza Azul · Río Mezquites</span>
+      <h2>Explora y conviértete en Guardián</h2>
+      <p>Busca las placas con código QR, escanéalas y descubre los secretos de Cuatro Ciénegas. Al terminar cada escena ganas una insignia secreta.</p>
+      <button class="boton-escanear" id="btnEscanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="8" y="8" width="8" height="8" rx="1.5"/></svg> Escanear placa</button>
+      <button class="boton-claro" id="btnBienvenida">▶ Ver la bienvenida</button>
+    </div>
+    <div class="tarjeta">
+      <div class="fila-prog"><b>Tu colección</b><span id="progTexto"></span></div>
+      <div class="barra-prog"><div id="progBarra"></div></div>
     </div>
 
     <div class="tarjeta oculto" id="escaner">
@@ -302,8 +476,8 @@
     </div>
 
     <div class="tarjeta">
-      <b>Escenas que ya viste</b>
-      <p class="progreso" style="margin-top:4px">Toca una escena que ya desbloqueaste para volver a verla.</p>
+      <h3 style="margin-bottom:2px">Escenas</h3>
+      <p class="progreso" style="margin-top:0">Toca una escena que ya desbloqueaste para volver a verla.</p>
       <div class="lista-qr" id="listaQR"></div>
     </div>
   </section>
@@ -364,7 +538,32 @@
       <button class="boton verde oculto" id="btnCompartir">📲 Compartir en redes</button>
     </div>
   </section>
+  <!-- REGLAMENTO -->
+  <section id="tab-reglamento" class="oculto">
+    <div class="tarjeta">
+      <span class="hero-etiqueta oscuro">Área de Protección de Flora y Fauna Cuatrociénegas</span>
+      <h2 style="margin:10px 0 6px">Reglamento para la conservación de Poza Azul y Río Mezquites</h2>
+      <p style="margin:0;color:var(--gris);font-weight:600">Propuesta de reglamento ambiental · Blue Ants Eco Souls</p>
+      <div id="miFirma"></div>
+    </div>
+    <div class="tarjeta">
+      <h3>Lo más importante</h3>
+      <ul class="reglas-clave" id="reglasClave"></ul>
+    </div>
+    <div class="tarjeta reg-intro">
+      <h3 style="margin-bottom:4px">Reglamento completo</h3>
+      <div id="regCompleto"><details class="cap"><summary>Preámbulo</summary><p>Cuatro Ciénegas constituye uno de los ecosistemas de mayor importancia biológica y científica de México. Sus características geológicas, cuerpos de agua, microorganismos y especies endémicas representan un patrimonio natural de gran valor que requiere medidas especiales de conservación.</p><p>Debido a la fragilidad de sus ecosistemas y a la importancia de preservar sus condiciones naturales, se establece el presente reglamento, cuyo propósito es regular las actividades realizadas en Poza Azul y Río Mezquites, promoviendo el respeto por la biodiversidad, el uso responsable de los recursos naturales y el desarrollo de investigaciones científicas responsables.</p><p>Este reglamento busca establecer obligaciones tanto para visitantes como para investigadores y personal encargado, con el propósito de prevenir daños ambientales, reducir las actividades perjudiciales y fomentar una cultura de responsabilidad ecológica.</p></details><details class="cap"><summary>CAPÍTULO I. DISPOSICIONES GENERALES</summary><p><b>Artículo 1. Objetivo.</b></p><p>El presente reglamento tiene como objetivo establecer las normas necesarias para la protección, conservación y uso responsable de los ecosistemas de Poza Azul y Río Mezquites.</p><p><b>Artículo 2. Ámbito de aplicación.</b></p><p>Las disposiciones serán aplicables a todas las personas que ingresen o realicen actividades dentro de las áreas contempladas, incluyendo visitantes, turistas, investigadores, estudiantes, trabajadores y personal administrativo.</p><p><b>Artículo 3. Principios de conservación.</b></p><p>Todas las actividades deberán respetar los siguientes principios:</p><ul><li>Protección de la biodiversidad.</li><li>Conservación de los recursos naturales.</li><li>Prevención de la contaminación.</li><li>Respeto a las especies endémicas.</li><li>Investigación científica responsable.</li><li>Uso sustentable de los espacios naturales.</li></ul><p><b>Artículo 4. Responsabilidad individual.</b></p><p>Toda persona que ingrese a los sitios será responsable de sus acciones y deberá respetar las disposiciones establecidas en este reglamento.</p><p><b>Artículo 5. Autoridades responsables.</b></p><p>La vigilancia y aplicación de las disposiciones corresponderán a las autoridades ambientales competentes y al personal administrador autorizado, de acuerdo con sus respectivas facultades.</p></details><details class="cap"><summary>CAPÍTULO II. PROTECCIÓN DE LA BIODIVERSIDAD</summary><p><b>Artículo 6. Protección de especies.</b></p><p>Queda prohibido molestar, perseguir, capturar, alimentar, lastimar o extraer animales silvestres de su hábitat.</p><p><b>Artículo 7. Protección de la vegetación.</b></p><p>Se prohíbe arrancar, cortar, dañar o extraer plantas, algas y cualquier otro organismo vegetal presente en el ecosistema.</p><p><b>Artículo 8. Protección de especies endémicas.</b></p><p>Se deberá prestar especial atención a las especies endémicas de Cuatro Ciénegas, evitando cualquier actividad que pueda poner en riesgo su supervivencia o alterar sus condiciones naturales.</p><p><b>Artículo 9. Prohibición de introducir especies.</b></p><p>No se permitirá introducir animales, plantas, microorganismos ni organismos ajenos al ecosistema sin las autorizaciones correspondientes.</p><p><b>Artículo 10. Protección de hábitats.</b></p><p>Se prohíbe destruir, modificar o alterar refugios, sitios de reproducción, áreas de anidación y cualquier otro espacio natural utilizado por las especies.</p><p><b>Artículo 11. Protección de microorganismos.</b></p><p>Se deberán evitar actividades que puedan alterar las comunidades microbianas presentes en el agua, los sedimentos y otras superficies naturales.</p><p><b>Artículo 12. Prohibición de extracción.</b></p><p>No se permitirá retirar piedras, minerales, fósiles, sedimentos, organismos, muestras de agua u otros elementos naturales sin autorización de las autoridades correspondientes.</p></details><details class="cap"><summary>CAPÍTULO III. CONSERVACIÓN Y USO RESPONSABLE DEL AGUA</summary><p><b>Artículo 13. Protección de los cuerpos de agua.</b></p><p>Queda prohibido arrojar basura, sustancias contaminantes, productos químicos, alimentos o cualquier material que pueda modificar las condiciones naturales del agua.</p><p><b>Artículo 14. Prevención de contaminación.</b></p><p>No se permitirá introducir sustancias que puedan alterar la composición química, física o biológica de los cuerpos de agua.</p><p><b>Artículo 15. Actividades acuáticas.</b></p><p>Las actividades recreativas dentro del agua únicamente podrán realizarse en los espacios expresamente autorizados y bajo las condiciones establecidas por la administración correspondiente.</p><p><b>Artículo 16. Uso de productos personales.</b></p><p>Se deberán respetar las restricciones particulares sobre protectores solares, cremas, jabones, repelentes y otros productos que puedan entrar en contacto con el agua.</p><p><b>Artículo 17. Alteración del flujo natural.</b></p><p>Queda prohibido modificar el flujo del agua, construir obstáculos, remover sedimentos o intervenir en manantiales y canales naturales sin autorización.</p><p><b>Artículo 18. Uso responsable del recurso hídrico.</b></p><p>Se promoverá el uso responsable del agua, evitando desperdicios y cualquier actividad que pueda afectar su disponibilidad o calidad.</p></details><details class="cap"><summary>CAPÍTULO IV. REGULACIÓN DE VISITANTES Y TURISMO</summary><p><b>Artículo 19. Respeto a las zonas autorizadas.</b></p><p>Los visitantes deberán permanecer dentro de los senderos, caminos y espacios habilitados para el acceso público.</p><p><b>Artículo 20. Acceso a zonas restringidas.</b></p><p>No se permitirá ingresar a zonas cerradas, delimitadas o identificadas como áreas de conservación especial o investigación.</p><p><b>Artículo 21. Manejo de residuos.</b></p><p>Cada visitante será responsable de retirar sus residuos y depositarlos en los lugares correspondientes.</p><p><b>Artículo 22. Prohibición de alimentar animales.</b></p><p>No se permitirá proporcionar alimentos a los animales silvestres, debido a las posibles alteraciones en su comportamiento y alimentación natural.</p><p><b>Artículo 23. Control del ruido.</b></p><p>Se deberán evitar gritos, música a volumen elevado, bocinas y cualquier actividad que pueda perturbar a la fauna.</p><p><b>Artículo 24. Fotografía y grabación.</b></p><p>Se permitirá tomar fotografías y realizar grabaciones siempre que no se moleste a las especies, se altere el entorno o se invadan zonas restringidas.</p><p><b>Artículo 25. Prohibición de abandonar objetos.</b></p><p>No se permitirá dejar objetos, materiales, equipos o estructuras dentro de las áreas naturales.</p><p><b>Artículo 26. Respeto a las indicaciones.</b></p><p>Los visitantes deberán obedecer las instrucciones del personal autorizado y respetar las señalizaciones establecidas.</p><p><b>Artículo 27. Actividades recreativas.</b></p><p>Las actividades recreativas deberán realizarse únicamente en los espacios permitidos y bajo las condiciones establecidas para cada sitio.</p><p><b>Artículo 28. Capacidad de visitantes.</b></p><p>Se propone establecer límites de visitantes por horario o jornada cuando las condiciones ambientales o la capacidad de las instalaciones lo requieran, de acuerdo con los estudios y disposiciones de las autoridades competentes.</p></details><details class="cap"><summary>CAPÍTULO V. INVESTIGACIÓN CIENTÍFICA</summary><p><b>Artículo 29. Autorización de investigaciones.</b></p><p>Toda investigación que implique recolección de muestras, manipulación de organismos, instalación de equipos o intervención en el ecosistema deberá contar previamente con los permisos correspondientes.</p><p><b>Artículo 30. Prioridad de métodos no invasivos.</b></p><p>Se dará preferencia a métodos de observación, fotografía, medición y monitoreo que permitan obtener información sin alterar las condiciones naturales del ecosistema.</p><p><b>Artículo 31. Protección de muestras.</b></p><p>Las muestras de agua, suelo, sedimentos, microorganismos o especies solamente podrán obtenerse bajo autorización y siguiendo los procedimientos establecidos por las autoridades competentes.</p><p><b>Artículo 32. Registro de investigaciones.</b></p><p>Toda investigación autorizada deberá contar con un registro que incluya:</p><ul><li>Nombre del responsable.</li><li>Institución o equipo participante.</li><li>Fecha y ubicación del estudio.</li><li>Objetivo de la investigación.</li><li>Métodos utilizados.</li><li>Resultados obtenidos.</li><li>Posibles alteraciones observadas.</li></ul><p><b>Artículo 33. Presentación de resultados.</b></p><p>Los investigadores deberán entregar los resultados y registros correspondientes a la autoridad que haya autorizado el estudio, conforme a las condiciones de su permiso.</p><p><b>Artículo 34. Prohibición de experimentación no autorizada.</b></p><p>No se permitirá realizar experimentos que impliquen modificar artificialmente las condiciones del agua, introducir organismos o alterar el equilibrio ecológico.</p><p><b>Artículo 35. Colaboración científica.</b></p><p>Se promoverá la colaboración entre instituciones educativas, universidades, investigadores y autoridades ambientales para ampliar el conocimiento sobre los ecosistemas de Cuatro Ciénegas.</p><p><b>Artículo 36. Difusión del conocimiento.</b></p><p>Se fomentará la divulgación de los resultados científicos mediante materiales educativos, informes y actividades de concientización, respetando las restricciones aplicables a los datos y sitios sensibles.</p></details><details class="cap"><summary>CAPÍTULO VI. MONITOREO Y REGISTRO AMBIENTAL</summary><p><b>Artículo 37. Monitoreo periódico.</b></p><p>Se propone establecer programas de monitoreo que permitan conocer las condiciones ambientales de Poza Azul y Río Mezquites y detectar posibles cambios en sus ecosistemas.</p><p><b>Artículo 38. Variables ambientales.</b></p><p>Los programas podrán considerar variables como:</p><ul><li>Temperatura del agua.</li><li>pH.</li><li>Oxígeno disuelto.</li><li>Turbidez.</li><li>Conductividad.</li><li>Nivel del agua.</li><li>Presencia y distribución de especies.</li><li>Otras variables determinadas por especialistas.</li></ul><p><b>Artículo 39. Registro de mediciones.</b></p><p>Cada medición deberá incluir fecha, hora, ubicación, variable registrada, instrumento utilizado y responsable de la medición.</p><p><b>Artículo 40. Conservación de registros.</b></p><p>La información recopilada deberá almacenarse y conservarse para permitir comparaciones entre diferentes periodos y facilitar futuras investigaciones.</p><p><b>Artículo 41. Verificación de resultados.</b></p><p>Los resultados deberán verificarse mediante procedimientos adecuados y, cuando sea necesario, con apoyo de especialistas para evitar conclusiones basadas en errores de medición.</p><p><b>Artículo 42. Comunicación de cambios.</b></p><p>Cualquier cambio inusual en las condiciones del agua, la vegetación o la fauna deberá comunicarse al personal responsable para su evaluación.</p><p><b>Artículo 43. Acceso a información científica.</b></p><p>Se promoverá el intercambio de información entre las autoridades e instituciones científicas, respetando las restricciones de acceso y protección de información que correspondan.</p></details><details class="cap"><summary>CAPÍTULO VII. PREVENCIÓN Y ATENCIÓN DE INCIDENTES AMBIENTALES</summary><p><b>Artículo 44. Reporte de incidentes.</b></p><p>Toda persona que observe contaminación, daño a la vegetación, alteración de hábitats, presencia de especies invasoras o cualquier otra situación que pueda afectar el ecosistema deberá comunicarlo al personal responsable.</p><p><b>Artículo 45. Registro de incidentes.</b></p><p>Los incidentes deberán documentarse mediante fotografías, ubicación, fecha, descripción y cualquier otra evidencia disponible que permita su evaluación.</p><p><b>Artículo 46. Atención de incidentes.</b></p><p>El personal autorizado deberá registrar el incidente, informar a las autoridades competentes y solicitar la atención correspondiente.</p><p><b>Artículo 47. Prevención de riesgos.</b></p><p>Se deberán establecer medidas preventivas para reducir las posibilidades de contaminación, deterioro de hábitats y alteraciones en los cuerpos de agua.</p><p><b>Artículo 48. Suspensión preventiva.</b></p><p>Cuando exista evidencia de un posible riesgo ambiental, la autoridad competente podrá determinar la suspensión temporal de las actividades relacionadas con dicho riesgo.</p></details><details class="cap"><summary>CAPÍTULO VIII. OBLIGACIONES DEL PERSONAL ENCARGADO</summary><p><b>Artículo 49. Vigilancia ambiental.</b></p><p>El personal encargado deberá contribuir a la vigilancia y conservación de las instalaciones y espacios naturales dentro de sus facultades.</p><p><b>Artículo 50. Orientación a visitantes.</b></p><p>Se deberá proporcionar información sobre las reglas de conservación y las actividades permitidas en cada sitio.</p><p><b>Artículo 51. Comunicación de irregularidades.</b></p><p>El personal deberá informar a las autoridades competentes sobre las actividades que puedan representar un riesgo para el ecosistema.</p><p><b>Artículo 52. Mantenimiento de señalizaciones.</b></p><p>Se deberá procurar que las señalizaciones y avisos ambientales se mantengan visibles y en condiciones adecuadas.</p><p><b>Artículo 53. Colaboración científica.</b></p><p>Se promoverá la cooperación con especialistas e instituciones para mejorar las medidas de conservación.</p></details><details class="cap"><summary>CAPÍTULO IX. PROHIBICIONES GENERALES</summary><p>Queda estrictamente prohibido:</p><p><b>Artículo 54.</b> Arrojar basura o sustancias contaminantes en cualquier zona natural.</p><p><b>Artículo 55.</b> Extraer, capturar, dañar o alterar organismos y elementos naturales sin autorización.</p><p><b>Artículo 56. Introducir especies ajenas al ecosistema.</b></p><p><b>Artículo 57.</b> Alterar el flujo natural del agua o modificar los cuerpos de agua.</p><p><b>Artículo 58. Ingresar a zonas restringidas sin autorización.</b></p><p><b>Artículo 59.</b> Realizar investigaciones, experimentos o recolección de muestras sin los permisos correspondientes.</p><p><b>Artículo 60.</b> Dañar o destruir señalizaciones, instrumentos o instalaciones de conservación.</p><p><b>Artículo 61.</b> Realizar actividades que generen ruido excesivo o perturben a las especies.</p><p><b>Artículo 62.</b> Destruir sitios de reproducción, refugio y alimentación de la fauna.</p><p><b>Artículo 63.</b> Ocultar deliberadamente información sobre incidentes ambientales o alterar registros científicos.</p><p><b>Artículo 64.</b> Realizar cualquier actividad que pueda ocasionar daños a los ecosistemas o poner en riesgo la biodiversidad.</p></details><details class="cap"><summary>CAPÍTULO X. SANCIONES Y MEDIDAS CORRECTIVAS</summary><p><b>Artículo 65. Aplicación de sanciones.</b></p><p>El incumplimiento de las disposiciones podrá dar lugar a medidas correctivas y sanciones, dependiendo de la gravedad de la conducta, el daño ocasionado, la reincidencia y las circunstancias en las que ocurrió.</p><p>Las medidas internas propuestas en este reglamento no sustituyen las sanciones administrativas, civiles o penales que puedan corresponder conforme a la legislación mexicana.</p><p><b>Artículo 66. Clasificación de infracciones.</b></p><p>Las infracciones se dividirán en tres niveles:</p><p><b>I. Infracciones leves:</b></p><ul><li>No respetar las indicaciones del personal.</li><li>Salir de los senderos autorizados sin ocasionar daños.</li><li>Generar ruido que perturbe temporalmente el entorno.</li><li>Dejar residuos que puedan retirarse sin causar daños permanentes.</li></ul><p><b>II. Infracciones graves:</b></p><ul><li>Ingresar deliberadamente a zonas restringidas.</li><li>Dañar señalizaciones o instalaciones.</li><li>Alimentar o molestar intencionalmente a especies silvestres.</li><li>Manipular equipos de investigación sin autorización.</li><li>Repetir infracciones leves.</li><li>Realizar actividades no autorizadas que puedan alterar el ecosistema.</li></ul><p><b>III. Infracciones muy graves:</b></p><ul><li>Extraer o capturar especies silvestres.</li><li>Introducir organismos ajenos al ecosistema.</li><li>Contaminar deliberadamente los cuerpos de agua.</li><li>Destruir hábitats o sitios de reproducción.</li><li>Alterar intencionalmente registros científicos.</li><li>Realizar intervenciones ambientales no autorizadas que ocasionen daños importantes.</li></ul><p><b>Artículo 67. Medidas por infracciones leves.</b></p><p>Podrán aplicarse las siguientes medidas:</p><ul><li>Llamado de atención verbal.</li><li>Amonestación por escrito.</li><li>Retiro de residuos u objetos abandonados.</li><li>Solicitud de abandonar temporalmente la actividad que ocasionó la infracción.</li></ul><p><b>Artículo 68. Medidas por infracciones graves.</b></p><p>Podrán aplicarse:</p><ul><li>Amonestación formal.</li><li>Retiro de las instalaciones.</li><li>Suspensión temporal del acceso, cuando esté legalmente permitido.</li><li>Reparación o restitución del daño cuando corresponda y sea técnicamente viable.</li><li>Notificación a las autoridades competentes.</li></ul><p><b>Artículo 69. Medidas por infracciones muy graves.</b></p><p>Podrán aplicarse, según corresponda:</p><ul><li>Retiro inmediato de las instalaciones.</li><li>Restricción de acceso, conforme a las facultades de la administración.</li><li>Notificación inmediata a las autoridades ambientales.</li><li>Exigencia de reparación o compensación del daño cuando proceda legalmente.</li><li>Aplicación de las sanciones previstas por la legislación vigente.</li></ul><p><b>Artículo 70. Determinación de las sanciones.</b></p><p>La gravedad de cada infracción y la medida correspondiente deberán ser determinadas por la autoridad competente o por el administrador autorizado dentro de sus atribuciones.</p><p>Para establecer la medida se deberán considerar:</p><ul><li>La magnitud del daño ocasionado.</li><li>La duración de la afectación.</li><li>El número de especies o espacios afectados.</li><li>La intención de la persona responsable.</li><li>La reincidencia.</li><li>La posibilidad de reparar el daño.</li><li>Las circunstancias particulares del incidente.</li></ul><p><b>Artículo 71. Rango de sanciones.</b></p><p>Para efectos de esta propuesta, las medidas internas podrán ir desde una amonestación verbal o escrita hasta la restricción temporal o definitiva de acceso, cuando exista fundamento y facultades para ello.</p><p>En caso de que la conducta constituya una infracción a la legislación ambiental, las multas y demás sanciones económicas serán determinadas exclusivamente por las autoridades competentes conforme a las disposiciones legales aplicables.</p><p><b>Artículo 72. Reparación del daño ambiental.</b></p><p>Cuando se compruebe que una persona ocasionó daños al ecosistema, se deberá evaluar la posibilidad de restauración mediante procedimientos determinados por especialistas y autoridades ambientales. No se permitirá que personas sin preparación realicen acciones de restauración por cuenta propia.</p><p><b>Artículo 73. Derecho de aclaración.</b></p><p>Toda persona señalada como responsable tendrá derecho a conocer los motivos de la medida aplicada y a presentar las aclaraciones o pruebas que correspondan ante la autoridad competente.</p><p><b>Artículo 74. Reincidencia.</b></p><p>La repetición de una misma infracción podrá considerarse un agravante y dar lugar a medidas más estrictas, de acuerdo con las disposiciones aplicables.</p></details><details class="cap"><summary>CAPÍTULO XI. EDUCACIÓN Y CONCIENTIZACIÓN AMBIENTAL</summary><p><b>Artículo 75. Educación ambiental.</b></p><p>Se promoverán actividades educativas para informar a los visitantes sobre la importancia ecológica de Cuatro Ciénegas y la necesidad de proteger sus ecosistemas.</p><p><b>Artículo 76. Participación de instituciones educativas.</b></p><p>Se fomentará la colaboración con escuelas y universidades para desarrollar proyectos de investigación, observación y divulgación ambiental, siempre con las autorizaciones necesarias.</p><p><b>Artículo 77. Cultura de conservación.</b></p><p>Se promoverá la participación responsable de visitantes y comunidades en actividades que contribuyan a la conservación del patrimonio natural.</p><p><b>Artículo 78. Difusión del reglamento.</b></p><p>El presente reglamento deberá difundirse mediante señalizaciones, materiales informativos y medios digitales para facilitar su conocimiento y cumplimiento.</p></details><details class="cap"><summary>CAPÍTULO XII. DISPOSICIONES FINALES</summary><p><b>Artículo 79. Conocimiento del reglamento.</b></p><p>Toda persona que ingrese a las áreas contempladas deberá conocer y respetar las disposiciones aplicables.</p><p><b>Artículo 80. Actualización.</b></p><p>El reglamento podrá revisarse y actualizarse periódicamente con base en nuevos estudios científicos, cambios ambientales y recomendaciones de especialistas.</p><p><b>Artículo 81. Interpretación.</b></p><p>Cualquier situación no contemplada en este documento deberá ser evaluada por las autoridades ambientales competentes, conforme a la legislación vigente y los instrumentos de manejo aplicables.</p><p><b>Artículo 82. Respeto a la legislación ambiental.</b></p><p>Todas las disposiciones de este reglamento deberán interpretarse de manera compatible con las leyes, normas oficiales mexicanas, decretos y programas de manejo aplicables al Área de Protección de Flora y Fauna Cuatrociénegas.</p></details></div>
+    </div>
+    <div class="tarjeta lema"><p style="margin:0">Proteger Cuatro Ciénegas no significa solamente conservar lo que conocemos, sino también garantizar que las futuras generaciones puedan descubrir todo lo que aún nos falta por conocer.</p></div>
+  </section>
 </main>
+
+<nav id="navAbajo">
+  <button data-tab="tour" class="activo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="8" y="8" width="8" height="8" rx="1.5"/></svg><span>Explorar</span></button>
+  <button data-tab="pasaporte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="6"/><path d="M8.6 10.2 6 3h4l2 4 2-4h4l-2.6 7.2"/><path d="m12 12.3.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3z"/></svg><span>Pasaporte</span></button>
+  <button data-tab="reglamento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span>Reglamento</span></button>
+  <button data-tab="reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M12 8v4M12 14.5v.01"/></svg><span>Reportes</span></button>
+</nav>
 
 <!-- ===== EL "VIDEO" A PANTALLA COMPLETA ===== -->
 <div id="teatro" class="oculto" role="dialog" aria-label="Escena">
@@ -434,6 +633,68 @@
     <p id="juegoTexto"></p>
     <button class="boton" id="juegoOtra">🔁 Intentar otra vez</button>
     <button class="boton sec" id="juegoSalir">🎬 Ver la escena otra vez</button>
+  </div>
+</div>
+
+<!-- ===== PORTADA ===== -->
+<div id="portada" class="pantalla oculto">
+  <div class="portada-fondo" aria-hidden="true">
+    <div class="portada-sol"></div>
+    <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+      <path d="M0 110 L50 70 L90 95 L140 50 L190 90 L230 62 L280 98 L330 60 L400 100 V200 H0Z" fill="rgba(8,64,95,.45)"/>
+      <path d="M0 140 Q60 120 120 140 T240 140 T360 140 T480 140 V200 H0Z" fill="rgba(46,196,214,.35)"/>
+      <path d="M0 165 Q60 148 120 165 T240 165 T360 165 T480 165 V200 H0Z" fill="rgba(255,255,255,.14)"/>
+    </svg>
+  </div>
+  <div class="portada-contenido">
+    <div class="logo-grande"><img src="logo.png" alt="Logo de Blue Ants Eco Souls" onerror="this.parentNode.classList.add('sin-logo')"></div>
+    <span class="hero-etiqueta">Blue Ants Eco Souls presenta</span>
+    <h1>Guardianes de<br>Cuatro Ciénegas</h1>
+    <p>Un recorrido por Poza Azul y el Río Mezquites</p>
+    <button class="boton-escanear grande" id="btnEmpezar">Empezar el recorrido</button>
+  </div>
+</div>
+
+<!-- ===== REGLAMENTO Y FIRMA (solo la primera vez) ===== -->
+<div id="firma" class="pantalla oculto">
+  <div class="firma-caja">
+    <div class="firma-logo"><img src="logo.png" alt="" onerror="this.parentNode.classList.add('sin-logo')"></div>
+    <div class="pasos"><span class="paso activo">1. Lee</span><span class="paso">2. Firma</span></div>
+
+    <div id="firmaPaso1">
+      <h2>Antes de entrar…</h2>
+      <p>Para visitar Poza Azul y el Río Mezquites necesitas leer y aceptar el reglamento.</p>
+      <h3>Lo más importante</h3>
+      <ul class="reglas-clave" id="reglasClave2"></ul>
+      <details class="ver-todo"><summary>Leer el reglamento completo</summary><div id="regCopia"></div></details>
+      <button class="boton" id="btnIrFirmar">Continuar a la firma ▶</button>
+    </div>
+
+    <div id="firmaPaso2" class="oculto">
+      <h2>Carta de compromiso</h2>
+      <label for="fNombre">Nombre completo</label>
+      <input type="text" id="fNombre" autocomplete="name" placeholder="Escribe tu nombre completo">
+      <label for="fActividad">Actividad o motivo de ingreso</label>
+      <select id="fActividad">
+        <option>Visita turística</option><option>Visita escolar</option><option>Investigación</option>
+        <option>Trabajo</option><option>Otro</option>
+      </select>
+      <div class="carta" id="cartaTexto"></div>
+      <label>Firma de conformidad</label>
+      <div class="lienzo-firma"><canvas id="padFirma"></canvas><span class="guia" id="guiaFirma">Firma aquí con tu dedo</span></div>
+      <button class="boton-claro chico" id="btnBorrarFirma">Borrar firma</button>
+      <label class="check"><input type="checkbox" id="fAcepto"> He leído el reglamento y acepto cumplirlo.</label>
+      <p class="aviso oculto" id="fError"></p>
+      <button class="boton verde" id="btnEnviarFirma">Firmar y enviar</button>
+      <button class="boton sec" id="btnVolverLeer">◀ Volver a leer</button>
+    </div>
+
+    <div id="firmaListo" class="listo oculto">
+      <div class="palomita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 id="listoNombre"></h2>
+      <p>Tu firma quedó guardada. Ya eres parte de los Guardianes de Cuatro Ciénegas.</p>
+      <button class="boton" id="btnEntrar">Entrar a la app</button>
+    </div>
   </div>
 </div>
 
@@ -1159,7 +1420,7 @@ function dibujarInsigniaCanvas(c, b, jugador){
   ctx.fillStyle = "#fff"; ajustarTexto(ctx, b.nombre, 540, 878, 980, 66, "900");
   if(jugador){ ctx.font = "bold 44px system-ui, sans-serif"; ctx.fillText(jugador, 540, 945); }
   ctx.font = "34px system-ui, sans-serif"; ctx.fillText("#GuardiánDeCuatroCiénegas", 540, 1002);
-  ctx.font = "26px system-ui, sans-serif"; ctx.fillText("Equipo Blue Ants 🐜", 540, 1050);
+  ctx.font = "26px system-ui, sans-serif"; ctx.fillText("Blue Ants Eco Souls", 540, 1050);
 }
 
 /* ================================================================
@@ -1327,7 +1588,7 @@ $("btnCrearInsignia").onclick = async ()=>{
   ctx.fillStyle = "#fff";
   ctx.font = "bold 64px system-ui, sans-serif"; ctx.fillText(nombre, 540, 900);
   ctx.font = "40px system-ui, sans-serif"; ctx.fillText("#GuardiánDeCuatroCiénegas", 540, 970);
-  ctx.font = "30px system-ui, sans-serif"; ctx.fillText("Equipo Blue Ants 🐜", 540, 1030);
+  ctx.font = "30px system-ui, sans-serif"; ctx.fillText("Blue Ants Eco Souls", 540, 1030);
   c.classList.remove("oculto"); $("btnCompartir").classList.remove("oculto");
 };
 $("btnCompartir").onclick = ()=> compartirCanvas($("lienzo"),
@@ -1707,11 +1968,393 @@ function retoBasura(area, R){
 }
 
 /* ================================================================
+   VERSIÓN 6: insignias dibujadas, pestañas nuevas, portada,
+   reglamento y firma digital
+   ================================================================ */
+
+/* ---------- Dibujos de cada insignia (en un cuadro de 100 x 120) ---------- */
+const TRAZO = 'stroke="#fff" stroke-linejoin="round" stroke-linecap="round"';
+const ICONOS = {
+  cactus:
+    '<circle cx="64" cy="48" r="7" fill="#ffe27a"/>' +
+    '<path d="M45 68 H40 a5 5 0 0 1 -5 -5 V55 a3.5 3.5 0 0 1 7 0 V61 H45 Z" fill="#43a85f" ' + TRAZO + ' stroke-width="2"/>' +
+    '<path d="M55 64 H60 a5 5 0 0 0 5 -5 V53 a3.5 3.5 0 0 0 -7 0 V57 H55 Z" fill="#43a85f" ' + TRAZO + ' stroke-width="2"/>' +
+    '<path d="M45 84 V48 a5 5 0 0 1 10 0 V84 Z" fill="#43a85f" ' + TRAZO + ' stroke-width="2"/>' +
+    '<path d="M50 52 V80" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>' +
+    '<path d="M32 84 H68" ' + TRAZO + ' stroke-width="2.5"/>',
+  oasis:
+    '<circle cx="62" cy="47" r="6.5" fill="#ffe27a"/>' +
+    '<path d="M27 72 L40 54 L48 63 L57 51 L73 72 Z" fill="#e9b56c" ' + TRAZO + ' stroke-width="1.6"/>' +
+    '<ellipse cx="50" cy="75" rx="21" ry="8" fill="#2fc4e0" ' + TRAZO + ' stroke-width="1.8"/>' +
+    '<path d="M38 75 q4 -2.5 8 0 t8 0 t8 0" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>',
+  gota:
+    '<path d="M50 39 C50 39 33 58 33 69 a17 17 0 0 0 34 0 C67 58 50 39 50 39 Z" fill="#4fc3f7" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<path d="M39 71 q5.5 -3.5 11 0 t11 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<path d="M42 77 q4 -2.5 8 0 t8 0" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.8" stroke-linecap="round"/>' +
+    '<ellipse cx="43" cy="61" rx="3" ry="5" fill="rgba(255,255,255,.75)" transform="rotate(25 43 61)"/>',
+  lupa:
+    '<line x1="56" y1="68" x2="68" y2="80" stroke="#fff" stroke-width="6" stroke-linecap="round"/>' +
+    '<circle cx="46" cy="58" r="14.5" fill="rgba(255,255,255,.22)" stroke="#fff" stroke-width="3.2"/>' +
+    '<circle cx="41" cy="53" r="3.4" fill="#b8f5a0"/><circle cx="51" cy="60" r="2.8" fill="#ffd36e"/>' +
+    '<ellipse cx="43" cy="64" rx="4" ry="2.2" fill="#ff9ec7" transform="rotate(-20 43 64)"/>' +
+    '<circle cx="51" cy="51" r="1.6" fill="#fff"/>',
+  estromatolito:
+    '<circle cx="62" cy="48" r="2.4" fill="none" stroke="#fff" stroke-width="1.4"/>' +
+    '<circle cx="57" cy="42" r="1.8" fill="none" stroke="#fff" stroke-width="1.2"/>' +
+    '<path d="M29 82 C29 56 71 56 71 82 Z" fill="#c99a5b" ' + TRAZO + ' stroke-width="1.8"/>' +
+    '<path d="M33 77 C37 63 63 63 67 77" fill="none" stroke="#8a6034" stroke-width="3"/>' +
+    '<path d="M37 71 C41 62 59 62 63 71" fill="none" stroke="#f3d7a2" stroke-width="2.6"/>' +
+    '<path d="M42 65 C45 60.5 55 60.5 58 65" fill="none" stroke="#8a6034" stroke-width="2.4"/>' +
+    '<path d="M26 82 H74" ' + TRAZO + ' stroke-width="2.5"/>',
+  hoja:
+    '<path d="M35 81 C35 58 52 46 69 44 C69 63 56 79 35 81 Z" fill="#6fdc8c" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<path d="M37 79 C46 68 54 59 65 48" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<circle cx="39" cy="50" r="8" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="1.6"/>' +
+    '<text x="39" y="53.5" text-anchor="middle" font-size="8" font-weight="800" fill="#fff" font-family="Arial,sans-serif">O2</text>' +
+    '<circle cx="31" cy="40" r="3" fill="none" stroke="#fff" stroke-width="1.3"/>',
+  rio:
+    '<path d="M33 41 C47 49 39 60 51 66 C61 71 57 78 66 85 L54 85 C46 79 49 73 41 69 C29 63 37 51 25 45 Z" fill="#45c6e6" ' + TRAZO + ' stroke-width="1.6"/>' +
+    '<path d="M37 52 q3 2 5 0 M45 70 q3 2 5 0" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>' +
+    '<path d="M67 70 V55 M71 72 V60 M63 72 V62" stroke="#a8e6a1" stroke-width="2.4" stroke-linecap="round"/>' +
+    '<ellipse cx="67" cy="53" rx="1.8" ry="4" fill="#8a6034"/>',
+  gema:
+    '<path d="M35 53 L44 44 H56 L65 53 L50 81 Z" fill="#f9b6ff" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<path d="M35 53 H65 M44 44 L48 53 L50 81 L52 53 L56 44" fill="none" stroke="#fff" stroke-width="1.4"/>' +
+    '<path d="M38 53 L50 81 L42 53 Z" fill="rgba(255,255,255,.35)"/>' +
+    '<path d="M67 40 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6 -3.6 -3.6 -1.6 3.6 -1.6 z" fill="#fff"/>',
+  pez:
+    '<path d="M64 62 L75 53 L72.5 62 L75 71 Z" fill="#5aa9ff" ' + TRAZO + ' stroke-width="2"/>' +
+    '<path d="M42 52 C46 44 55 44 59 53" fill="#3d82e0" ' + TRAZO + ' stroke-width="1.6"/>' +
+    '<path d="M29 62 C37 48 58 48 65 62 C58 76 37 76 29 62 Z" fill="#5aa9ff" ' + TRAZO + ' stroke-width="2"/>' +
+    '<path d="M48 54 V70 M54 55 V69" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<circle cx="37.5" cy="60" r="3" fill="#fff"/><circle cx="37" cy="60" r="1.5" fill="#12324a"/>' +
+    '<path d="M32.5 66 q3 2 6 0" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>',
+  tortuga:
+    '<ellipse cx="37" cy="50" rx="4.5" ry="5.5" fill="#9ccf7a" ' + TRAZO + ' stroke-width="1.5" transform="rotate(-35 37 50)"/>' +
+    '<ellipse cx="63" cy="50" rx="4.5" ry="5.5" fill="#9ccf7a" ' + TRAZO + ' stroke-width="1.5" transform="rotate(35 63 50)"/>' +
+    '<ellipse cx="37" cy="77" rx="4.5" ry="5.5" fill="#9ccf7a" ' + TRAZO + ' stroke-width="1.5" transform="rotate(35 37 77)"/>' +
+    '<ellipse cx="63" cy="77" rx="4.5" ry="5.5" fill="#9ccf7a" ' + TRAZO + ' stroke-width="1.5" transform="rotate(-35 63 77)"/>' +
+    '<ellipse cx="50" cy="42" rx="5" ry="6" fill="#9ccf7a" ' + TRAZO + ' stroke-width="1.5"/>' +
+    '<ellipse cx="50" cy="64" rx="16" ry="18" fill="#c58a4a" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<path d="M50 56 l6 3.6 v7 l-6 3.6 l-6 -3.6 v-7 z" fill="#e0a865" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>' +
+    '<path d="M50 56 V46.5 M56 59.6 L64.5 55 M56 66.6 L64.5 71 M50 70.2 V81.5 M44 66.6 L35.5 71 M44 59.6 L35.5 55" stroke="#fff" stroke-width="1.3"/>',
+  red:
+    '<path d="M50 45 L35 62 L50 79 L65 62 Z M50 45 V79 M35 62 H65" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<circle cx="50" cy="45" r="5.5" fill="#ffd36e" stroke="#fff" stroke-width="1.6"/>' +
+    '<circle cx="35" cy="62" r="5.5" fill="#8ef0a7" stroke="#fff" stroke-width="1.6"/>' +
+    '<circle cx="65" cy="62" r="5.5" fill="#7cc8ff" stroke="#fff" stroke-width="1.6"/>' +
+    '<circle cx="50" cy="79" r="5.5" fill="#ff9ec7" stroke="#fff" stroke-width="1.6"/>' +
+    '<circle cx="50" cy="62" r="4" fill="#fff"/>',
+  matraz:
+    '<path d="M40.4 70 H59.6 L64 78 Q65 82 61 82 H39 Q35 82 36 78 Z" fill="#7df0c8"/>' +
+    '<path d="M47 42 V54 L36 78 Q35 82 39 82 H61 Q65 82 64 78 L53 54 V42 Z" fill="rgba(255,255,255,.18)" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<path d="M44 42 H56" ' + TRAZO + ' stroke-width="2.6"/>' +
+    '<circle cx="46" cy="76" r="2" fill="#fff"/><circle cx="54" cy="73" r="1.5" fill="#fff"/>' +
+    '<circle cx="51" cy="63" r="1.6" fill="none" stroke="#fff" stroke-width="1.2"/><circle cx="48" cy="56" r="1.2" fill="none" stroke="#fff" stroke-width="1.1"/>',
+  corona:
+    '<path d="M32 76 L29 50 L41 60 L50 44 L59 60 L71 50 L68 76 Z" fill="#ffd54a" ' + TRAZO + ' stroke-width="2.2"/>' +
+    '<rect x="31" y="76" width="38" height="6.5" rx="2.5" fill="#f0b429" stroke="#fff" stroke-width="1.6"/>' +
+    '<circle cx="50" cy="66" r="3.8" fill="#e0457b" stroke="#fff" stroke-width="1.2"/>' +
+    '<circle cx="40" cy="69" r="2.6" fill="#4fc3f7" stroke="#fff" stroke-width="1"/>' +
+    '<circle cx="60" cy="69" r="2.6" fill="#6fdc8c" stroke="#fff" stroke-width="1"/>' +
+    '<circle cx="29" cy="50" r="2.6" fill="#fff"/><circle cx="50" cy="44" r="2.8" fill="#fff"/><circle cx="71" cy="50" r="2.6" fill="#fff"/>'
+};
+["cactus","oasis","gota","lupa","estromatolito","hoja","rio","gema","pez","tortuga","red","matraz","corona"]
+  .forEach((k, i)=>{ INSIGNIAS[i + 1].icono = k; });
+
+function estrella(cx, cy, r){
+  let p = "";
+  for(let i=0;i<10;i++){
+    const ang = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r;
+    p += (i ? " L" : "M") + (cx + Math.cos(ang) * rr).toFixed(2) + " " + (cy + Math.sin(ang) * rr).toFixed(2);
+  }
+  return p + " Z";
+}
+const ESTRELLAS = estrella(40, 26, 3.4) + " " + estrella(50, 24, 4.2) + " " + estrella(60, 26, 3.4);
+
+function badgeSVG(b, px){
+  const extra = px ? ' xmlns="http://www.w3.org/2000/svg" width="' + px + '" height="' + Math.round(px * 1.2) + '"' : '';
+  if(!b){
+    return '<svg class="escudo"' + extra + ' viewBox="0 0 100 120" aria-hidden="true">' +
+      '<path d="' + ESC + '" fill="#2c3a44" stroke="#4b5a64" stroke-width="4" stroke-linejoin="round"/>' +
+      '<path d="' + ESC_IN + '" fill="none" stroke="#3d4b55" stroke-width="2" stroke-dasharray="4 3"/>' +
+      '<text x="50" y="78" text-anchor="middle" font-size="48" font-weight="900" fill="#71828d" font-family="Arial,sans-serif">?</text></svg>';
+  }
+  const id = "dg" + (++numDegradado);
+  const dibujo = ICONOS[b.icono] || ('<text x="50" y="80" text-anchor="middle" font-size="40">' + b.icono + '</text>');
+  return '<svg class="escudo"' + extra + ' viewBox="0 0 100 120" aria-hidden="true"><defs>' +
+    '<linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + b.c1 + '"/><stop offset="1" stop-color="' + b.c2 + '"/></linearGradient>' +
+    '<linearGradient id="' + id + 'o" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#ffcc33"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs>' +
+    '<path d="' + ESC + '" fill="url(#' + id + ')" stroke="url(#' + id + 'o)" stroke-width="5" stroke-linejoin="round"/>' +
+    '<path d="' + ESC_IN + '" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/>' +
+    '<path d="' + ESC_LUZ + '" fill="rgba(255,255,255,.18)"/>' +
+    '<path d="' + ESTRELLAS + '" fill="#fff6c8"/>' +
+    '<circle cx="50" cy="63" r="28" fill="rgba(0,0,0,.14)" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>' +
+    dibujo + '</svg>';
+}
+
+/* Imagen para compartir una insignia */
+async function dibujarInsigniaCanvas(c, b, jugador){
+  c.width = 1080; c.height = 1080;
+  const ctx = c.getContext("2d");
+  const fondo = ctx.createRadialGradient(540, 400, 60, 540, 540, 800);
+  fondo.addColorStop(0, b.c1); fondo.addColorStop(.5, b.c2); fondo.addColorStop(1, "#0a1a26");
+  ctx.fillStyle = fondo; ctx.fillRect(0, 0, 1080, 1080);
+  ctx.save(); ctx.translate(540, 400); ctx.fillStyle = "rgba(255,255,255,.10)";
+  for(let i=0;i<24;i++){
+    ctx.rotate(Math.PI * 2 / 24);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-45, -760); ctx.lineTo(45, -760); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+  const img = await new Promise(ok=>{
+    const i = new Image(); i.onload = ()=> ok(i); i.onerror = ()=> ok(null);
+    i.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(badgeSVG(b, 540));
+  });
+  if(img){
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 40; ctx.shadowOffsetY = 14;
+    ctx.drawImage(img, 270, 64, 540, 648); ctx.restore();
+  }
+  const fuente = (peso, tam)=> peso + " " + tam + "px 'Baloo 2', 'Nunito', system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#ffe27a"; ctx.font = fuente(800, 34);
+  ctx.fillText("INSIGNIA DESBLOQUEADA", 540, 790);
+  ctx.fillStyle = "#fff";
+  let tam = 74;
+  do { ctx.font = fuente(800, tam); tam -= 2; } while(ctx.measureText(b.nombre).width > 980 && tam > 30);
+  ctx.fillText(b.nombre, 540, 866);
+  if(jugador){ ctx.font = fuente(700, 46); ctx.fillText(jugador, 540, 936); }
+  ctx.font = fuente(600, 34); ctx.fillText("#GuardiánDeCuatroCiénegas", 540, 996);
+  ctx.globalAlpha = .85; ctx.font = fuente(600, 28); ctx.fillText("Blue Ants Eco Souls", 540, 1046); ctx.globalAlpha = 1;
+}
+$("modalCompartir").onclick = async ()=>{
+  const nombre = $("modalJugador").value.trim();
+  guardar("nombreGuardian", nombre);
+  const c = $("modalLienzo");
+  await dibujarInsigniaCanvas(c, insigniaVista, nombre);
+  c.classList.remove("oculto");
+  compartirCanvas(c, "¡Gané la insignia " + insigniaVista.nombre + "! #GuardiánDeCuatroCiénegas", "insignia.png");
+};
+
+/* ---------- Pestañas (ahora con Reglamento) ---------- */
+function mostrarPestana(t){
+  document.querySelectorAll("#navAbajo button").forEach(b=> b.classList.toggle("activo", b.dataset.tab === t));
+  ["tour","pasaporte","reglamento","reportes"].forEach(x=> $("tab-" + x).classList.toggle("oculto", x !== t));
+  if(t !== "tour") detenerCamara();
+  if(t === "tour") pintarListaQR();
+  if(t === "pasaporte") pintarPasaporte();
+  if(t === "reportes") prepararReportes();
+  if(t === "reglamento") pintarReglamento();
+  window.scrollTo(0, 0);
+}
+const CANDADO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function pintarListaQR(){
+  const caja = $("listaQR"); caja.innerHTML = "";
+  for(let n=1;n<=TOTAL;n++){
+    const visto = desbloq.includes(n) || sellos.includes(n), ganada = sellos.includes(n);
+    const b = document.createElement("button");
+    b.className = "escena-tile" + (visto ? " visto" : "") + (ganada ? " ganada" : "");
+    b.innerHTML = '<span class="num"></span><span class="tit"></span>';
+    if(visto) b.querySelector(".num").textContent = n; else b.querySelector(".num").innerHTML = CANDADO;
+    b.querySelector(".tit").textContent = visto ? GUION[n].titulo : "Placa " + n + " · " + GUION[n].lugar;
+    b.setAttribute("aria-label", visto ? "Ver escena " + n : "Escena " + n + " bloqueada");
+    b.onclick = ()=>{ if(visto) abrirQR(n); else alert("Escanea la placa " + n + " para desbloquear esta escena."); };
+    caja.appendChild(b);
+  }
+  pintarProgreso();
+}
+function pintarProgreso(){
+  if(!$("progTexto")) return;
+  $("progTexto").textContent = sellos.length + " de " + TOTAL + " insignias";
+  $("progBarra").style.width = (sellos.length / TOTAL * 100) + "%";
+}
+
+/* ---------- Reglamento ---------- */
+const REGLAS_CLAVE = [
+  "Quédate en los senderos y no entres a zonas cerradas o restringidas.",
+  "No molestes, persigas, alimentes, captures ni saques animales.",
+  "No arranques plantas ni algas, y no te lleves piedras, fósiles, arena ni agua.",
+  "No tires basura ni sustancias al agua. Llévate tus residuos.",
+  "Respeta las reglas sobre bloqueador, repelente, cremas y jabones.",
+  "Métete al agua solo donde esté permitido.",
+  "No traigas plantas ni animales de otros lugares.",
+  "Evita el ruido: nada de gritos ni bocinas a todo volumen.",
+  "Toma fotos sin molestar a las especies.",
+  "Sigue las indicaciones del personal y las señales.",
+  "Si ves contaminación, daños o algo raro, repórtalo."
+];
+function llenarReglasClave(ul){
+  ul.innerHTML = "";
+  REGLAS_CLAVE.forEach((r, i)=>{
+    const li = document.createElement("li");
+    li.innerHTML = "<i></i><span></span>";
+    li.querySelector("i").textContent = i + 1;
+    li.querySelector("span").textContent = r;
+    ul.appendChild(li);
+  });
+}
+function cartaHTML(nombre){
+  const n = document.createElement("b"); n.textContent = nombre || "______________________";
+  return '<p>Yo, ' + n.outerHTML + ', declaro que he leído y comprendido las disposiciones establecidas en el presente ' +
+    'Reglamento Integral para la Conservación y Protección de Poza Azul y Río Mezquites.</p>' +
+    '<p>Reconozco la importancia ecológica y científica de estos espacios naturales, así como la responsabilidad que implica ' +
+    'visitarlos, investigarlos o realizar cualquier actividad dentro de ellos.</p>' +
+    '<p>Al firmar este documento, manifiesto mi compromiso de:</p><ol>' +
+    '<li>Respetar todas las disposiciones establecidas en el reglamento.</li>' +
+    '<li>Evitar cualquier acción que pueda perjudicar la biodiversidad o alterar las condiciones naturales del ecosistema.</li>' +
+    '<li>Seguir las indicaciones del personal autorizado.</li>' +
+    '<li>Informar sobre cualquier situación que represente un riesgo ambiental.</li>' +
+    '<li>Asumir las consecuencias correspondientes en caso de incumplir las disposiciones.</li></ol>' +
+    '<p>Asimismo, reconozco que el incumplimiento de este reglamento podrá dar lugar a medidas correctivas, amonestaciones, ' +
+    'restricciones de acceso y, cuando corresponda, sanciones establecidas por las autoridades competentes, cuya gravedad ' +
+    'dependerá de la naturaleza de la infracción y de los daños ocasionados.</p>' +
+    '<p>Declaro que acepto las condiciones aquí establecidas y que me comprometo a contribuir a la protección y conservación ' +
+    'de estos ecosistemas.</p>';
+}
+function fechaBonita(iso){
+  try{ return new Date(iso).toLocaleDateString("es-MX", {day:"numeric", month:"long", year:"numeric"}); }
+  catch(e){ return iso; }
+}
+function pintarReglamento(){
+  llenarReglasClave($("reglasClave"));
+  const f = leer("firma", null), caja = $("miFirma");
+  caja.innerHTML = "";
+  if(!f) return;
+  const d = document.createElement("div"); d.className = "firma-hecha";
+  d.innerHTML = '<img alt="Tu firma"><div><b></b><small></small></div>';
+  d.querySelector("img").src = f.firma;
+  d.querySelector("b").textContent = "✔ Firmado por " + f.nombre;
+  d.querySelector("small").textContent = f.actividad + " · " + fechaBonita(f.fecha);
+  caja.appendChild(d);
+  const det = document.createElement("details"); det.className = "ver-todo carta-guardada";
+  det.innerHTML = '<summary>Ver mi carta de compromiso</summary><div class="carta"></div>';
+  det.querySelector(".carta").innerHTML = cartaHTML(f.nombre) +
+    '<p><b>Actividad o motivo de ingreso:</b> <span class="act"></span><br><b>Fecha:</b> <span class="fec"></span></p>' +
+    '<p><b>Firma de conformidad:</b></p><img alt="Firma">';
+  det.querySelector(".act").textContent = f.actividad;
+  det.querySelector(".fec").textContent = fechaBonita(f.fecha);
+  det.querySelector("img").src = f.firma;
+  caja.appendChild(det);
+}
+
+/* ---------- Portada ---------- */
+function mostrarPortada(despues){
+  const p = $("portada");
+  p.classList.remove("oculto", "saliendo");
+  document.body.style.overflow = "hidden";
+  $("btnEmpezar").onclick = ()=>{
+    ajustarMusica();
+    p.classList.add("saliendo");
+    setTimeout(()=>{ p.classList.add("oculto"); document.body.style.overflow = ""; if(despues) despues(); }, 450);
+  };
+}
+
+/* ---------- Firma digital del reglamento ---------- */
+let trazos = 0, ctxFirma = null, alFirmar = null;
+function abrirFirma(despues){
+  alFirmar = despues;
+  llenarReglasClave($("reglasClave2"));
+  if(!$("regCopia").children.length) $("regCopia").innerHTML = $("regCompleto").innerHTML;
+  $("firmaPaso1").classList.remove("oculto");
+  $("firmaPaso2").classList.add("oculto");
+  $("firmaListo").classList.add("oculto");
+  marcarPaso(1);
+  $("firma").classList.remove("oculto");
+  $("firma").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+}
+function marcarPaso(n){ document.querySelectorAll(".paso").forEach((p, i)=> p.classList.toggle("activo", i === n - 1)); }
+$("btnIrFirmar").onclick = ()=>{
+  $("firmaPaso1").classList.add("oculto");
+  $("firmaPaso2").classList.remove("oculto");
+  marcarPaso(2); $("firma").scrollTop = 0;
+  pintarCarta(); prepararPad();
+};
+$("btnVolverLeer").onclick = ()=>{
+  $("firmaPaso2").classList.add("oculto");
+  $("firmaPaso1").classList.remove("oculto");
+  marcarPaso(1); $("firma").scrollTop = 0;
+};
+function pintarCarta(){ $("cartaTexto").innerHTML = cartaHTML($("fNombre").value.trim()); }
+$("fNombre").addEventListener("input", ()=>{ pintarCarta(); $("fError").classList.add("oculto"); });
+
+function prepararPad(){
+  const cv = $("padFirma"), r = cv.parentNode.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  ctxFirma = cv.getContext("2d");
+  ctxFirma.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctxFirma.lineWidth = 2.8; ctxFirma.lineCap = "round"; ctxFirma.lineJoin = "round"; ctxFirma.strokeStyle = "#12324a";
+  trazos = 0; $("guiaFirma").classList.remove("oculto");
+}
+(function(){
+  const cv = $("padFirma");
+  let dibujando = false;
+  const pos = e=>{ const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener("pointerdown", e=>{
+    if(!ctxFirma) prepararPad();
+    e.preventDefault(); dibujando = true;
+    try{ cv.setPointerCapture(e.pointerId); }catch(err){}
+    const [x, y] = pos(e);
+    ctxFirma.beginPath(); ctxFirma.moveTo(x, y); ctxFirma.lineTo(x + 0.1, y + 0.1); ctxFirma.stroke();
+    trazos++; $("guiaFirma").classList.add("oculto");
+  });
+  cv.addEventListener("pointermove", e=>{
+    if(!dibujando) return;
+    e.preventDefault();
+    const [x, y] = pos(e);
+    ctxFirma.lineTo(x, y); ctxFirma.stroke();
+  });
+  const fin = ()=>{ dibujando = false; };
+  cv.addEventListener("pointerup", fin); cv.addEventListener("pointercancel", fin);
+})();
+$("btnBorrarFirma").onclick = ()=> prepararPad();
+
+function errorFirma(t){ const e = $("fError"); e.textContent = t; e.classList.remove("oculto"); }
+$("btnEnviarFirma").onclick = async ()=>{
+  const nombre = $("fNombre").value.trim();
+  if(nombre.length < 3){ errorFirma("Escribe tu nombre completo."); $("fNombre").focus(); return; }
+  if(trazos === 0){ errorFirma("Falta tu firma: dibújala en el recuadro con tu dedo."); return; }
+  if(!$("fAcepto").checked){ errorFirma("Marca la casilla para aceptar el reglamento."); return; }
+  $("fError").classList.add("oculto");
+  // Guarda una copia pequeña de la firma
+  const cv = $("padFirma"), ancho = 480, alto = Math.round(cv.height * ancho / cv.width);
+  const chico = document.createElement("canvas"); chico.width = ancho; chico.height = alto;
+  const cx = chico.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, ancho, alto);
+  cx.drawImage(cv, 0, 0, ancho, alto);
+  const datos = { nombre, actividad: $("fActividad").value, fecha: new Date().toISOString(),
+                  firma: chico.toDataURL("image/jpeg", 0.8) };
+  guardar("firma", datos);
+  if(!leer("nombreGuardian", "")) guardar("nombreGuardian", nombre);
+  if(URL_REPORTES){
+    try{ await fetch(URL_REPORTES, {method:"POST", mode:"no-cors", body: JSON.stringify({tipo:"firma", ...datos})}); }catch(e){}
+  }
+  $("firmaPaso2").classList.add("oculto");
+  $("listoNombre").textContent = "¡Gracias, " + nombre.split(" ")[0] + "!";
+  $("firmaListo").classList.remove("oculto");
+  $("firma").scrollTop = 0;
+};
+$("btnEntrar").onclick = ()=>{
+  $("firma").classList.add("oculto");
+  document.body.style.overflow = "";
+  const cb = alFirmar; alFirmar = null;
+  if(cb) cb();
+};
+
+/* ---------- Al abrir la app ---------- */
+function iniciarApp(n){
+  const firmado = !!leer("firma", null);
+  if(n && firmado){ abrirQR(n); return; }
+  mostrarPortada(()=>{
+    if(!firmado) abrirFirma(()=>{ if(n) abrirQR(n); });
+    else if(n) abrirQR(n);
+  });
+}
+
+/* ================================================================
    Arranque: si la app se abrió desde un QR, abre esa escena
    ================================================================ */
 pintarListaQR();
 const desdeQR = numeroDeQR(location.search);
-if(desdeQR) abrirQR(desdeQR);
+iniciarApp(desdeQR);
 </script>
 </body>
 </html>
